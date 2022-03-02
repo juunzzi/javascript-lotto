@@ -305,41 +305,10 @@ var NUMBER = {
 
 /***/ }),
 
-/***/ "./src/js/constants/selector.js":
-/*!**************************************!*\
-  !*** ./src/js/constants/selector.js ***!
-  \**************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "SELECTOR": () => (/* binding */ SELECTOR)
-/* harmony export */ });
-var SELECTOR = {
-  APP: '#app',
-  CHARGE_INPUT_FORM: '#charge-input-form',
-  CHARGE_INPUT: '#charge-input',
-  ALIGN_CONVERTER: '#align-converter',
-  PURCHASED_MESSAGE: '#purchased-message',
-  LOTTO_CONTAINER: '#lotto-container',
-  WIN_NUMBER_INPUT_SECTION: '#win-number-input-section',
-  WIN_NUMBER_INPUT_FORM: '#win-number-input-form',
-  WINNING_NUMBER_INPUT: '.winning-number-input',
-  BONUS_NUMBER_INPUT: '.bonus-number-input',
-  WIN_STATISTICS: '#win-statistics',
-  STATISTICS_TABLE_BODY: '#statistics-table-body',
-  PROFIT_RATIO_TEXT: '#profit-ratio-text',
-  RESTART_BUTTON: '#restart-button',
-  MODAL_CANCEL_BUTTON: '.modal-cancel-button',
-  ALIGN_CONVERTER_CONTAINER: '#align-converter-container'
-};
-
-/***/ }),
-
-/***/ "./src/js/constants/win.js":
-/*!*********************************!*\
-  !*** ./src/js/constants/win.js ***!
-  \*********************************/
+/***/ "./src/js/constants/rank.js":
+/*!**********************************!*\
+  !*** ./src/js/constants/rank.js ***!
+  \**********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -375,6 +344,37 @@ var RANK_PRICE = (_RANK_PRICE = {}, _defineProperty(_RANK_PRICE, "".concat(RANK_
 
 /***/ }),
 
+/***/ "./src/js/constants/selector.js":
+/*!**************************************!*\
+  !*** ./src/js/constants/selector.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SELECTOR": () => (/* binding */ SELECTOR)
+/* harmony export */ });
+var SELECTOR = {
+  APP: '#app',
+  CHARGE_INPUT_FORM: '#charge-input-form',
+  CHARGE_INPUT: '#charge-input',
+  ALIGN_CONVERTER: '#align-converter',
+  PURCHASED_MESSAGE: '#purchased-message',
+  LOTTO_CONTAINER: '#lotto-container',
+  WIN_NUMBER_INPUT_SECTION: '#win-number-input-section',
+  WIN_NUMBER_INPUT_FORM: '#win-number-input-form',
+  WINNING_NUMBER_INPUT: '.winning-number-input',
+  BONUS_NUMBER_INPUT: '.bonus-number-input',
+  WIN_STATISTICS: '#win-statistics',
+  STATISTICS_TABLE_BODY: '#statistics-table-body',
+  PROFIT_RATIO_TEXT: '#profit-ratio-text',
+  RESTART_BUTTON: '#restart-button',
+  MODAL_CANCEL_BUTTON: '.modal-cancel-button',
+  ALIGN_CONVERTER_CONTAINER: '#align-converter-container'
+};
+
+/***/ }),
+
 /***/ "./src/js/domains/Lotto.js":
 /*!*********************************!*\
   !*** ./src/js/domains/Lotto.js ***!
@@ -386,7 +386,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _constants_number__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/number */ "./src/js/constants/number.js");
-/* harmony import */ var _constants_win__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/win */ "./src/js/constants/win.js");
+/* harmony import */ var _constants_rank__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/rank */ "./src/js/constants/rank.js");
 /* harmony import */ var _utils_gameUtil__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/gameUtil */ "./src/js/utils/gameUtil.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -441,7 +441,7 @@ var Lotto = /*#__PURE__*/function () {
           numberMatchCount = _this$lottoNumbers$fi.length;
 
       var isMatchBonus = this.lottoNumbers.includes(bonusNumber);
-      return (_RANK$ = _constants_win__WEBPACK_IMPORTED_MODULE_1__.RANK["".concat(numberMatchCount).concat(isMatchBonus)]) !== null && _RANK$ !== void 0 ? _RANK$ : _constants_win__WEBPACK_IMPORTED_MODULE_1__.RANK.UNRANK;
+      return (_RANK$ = _constants_rank__WEBPACK_IMPORTED_MODULE_1__.RANK["".concat(numberMatchCount).concat(isMatchBonus)]) !== null && _RANK$ !== void 0 ? _RANK$ : _constants_rank__WEBPACK_IMPORTED_MODULE_1__.RANK.UNRANK;
     }
   }]);
 
@@ -464,7 +464,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _constants_errorMessage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/errorMessage */ "./src/js/constants/errorMessage.js");
 /* harmony import */ var _constants_number__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/number */ "./src/js/constants/number.js");
-/* harmony import */ var _constants_win__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/win */ "./src/js/constants/win.js");
+/* harmony import */ var _constants_rank__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/rank */ "./src/js/constants/rank.js");
 /* harmony import */ var _utils_validator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/validator */ "./src/js/utils/validator.js");
 /* harmony import */ var _Lotto__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Lotto */ "./src/js/domains/Lotto.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
@@ -559,7 +559,7 @@ var LottoList = /*#__PURE__*/function () {
       var lottoPurchaseAmount = this.lottoList.length * _constants_number__WEBPACK_IMPORTED_MODULE_1__.NUMBER.LOTTO_PRICE;
       var profitAmount = Object.keys(statistics).reduce(function (prev, currentKey) {
         var count = statistics[currentKey];
-        var price = _constants_win__WEBPACK_IMPORTED_MODULE_2__.RANK_PRICE[currentKey];
+        var price = _constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_PRICE[currentKey];
         return prev + count * price;
       }, 0);
       return profitAmount / lottoPurchaseAmount * 100;
@@ -571,7 +571,7 @@ var LottoList = /*#__PURE__*/function () {
   }, {
     key: "changeStatisticsMap",
     value: function changeStatisticsMap(statisticsArray) {
-      var statisticsMap = Object.values(_constants_win__WEBPACK_IMPORTED_MODULE_2__.RANK_KEYS).reduce(function (prev, key) {
+      var statisticsMap = Object.values(_constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_KEYS).reduce(function (prev, key) {
         return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, "".concat(key), 0));
       }, {});
       return statisticsArray.reduce(function (prev, result) {
@@ -1002,7 +1002,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _constants_events__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/events */ "./src/js/constants/events.js");
 /* harmony import */ var _constants_selector__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/selector */ "./src/js/constants/selector.js");
-/* harmony import */ var _constants_win__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/win */ "./src/js/constants/win.js");
+/* harmony import */ var _constants_rank__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/rank */ "./src/js/constants/rank.js");
 /* harmony import */ var _utils_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/dom */ "./src/js/utils/dom.js");
 /* harmony import */ var _utils_util__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/util */ "./src/js/utils/util.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1062,7 +1062,7 @@ var LottoResultView = /*#__PURE__*/function () {
 
     _classPrivateFieldInitSpec(this, _basicTemplate, {
       writable: true,
-      value: "<section id=\"win-number-input-section\" aria-labelledby=\"win-number-input-title\" class=\"hide\">\n  <h1 id=\"win-number-input-title\" hidden>\uB2F9\uCCA8 \uBC88\uD638 \uC785\uB825 \uC139\uC158</h1>\n  <p>\uC9C0\uB09C \uC8FC \uB2F9\uCCA8\uBC88\uD638 6\uAC1C\uC640 \uBCF4\uB108\uC2A4 \uBC88\uD638 1\uAC1C\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.</p>\n  <form id=\"win-number-input-form\">\n    <div class=\"win-number-input-wrapper\">\n      <div>\n        <p>\uB2F9\uCCA8 \uBC88\uD638</p>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required/>\n      </div>\n\n      <div class=\"bonus-number-wrapper flex-column-align-end\">\n        <p>\uBCF4\uB108\uC2A4 \uBC88\uD638</p>\n        <input class=\"bonus-number-input\" type=\"number\" min=\"1\" max=\"45\" required/>\n      </div>\n    </div>\n\n    <button id=\"result-button\">\uACB0\uACFC \uD655\uC778\uD558\uAE30</button>\n  </form>\n</section>\n<section id=\"win-statistics\" aria-labelledby=\"win-statistics-title\" class=\"hide\">\n  <h1 id=\"win-statistics-title\" hidden>\uB2F9\uCCA8 \uD1B5\uACC4 \uCD9C\uB825</h1>\n  <div class='modal-wrapper'>\n  <div id=\"result-container\"class=\"modal-container\">\n  <span class=\"modal-cancel-button\">\u274C</span>\n     <div id=\"result-contents\">\n     <table  class=\".result-container-section\">\n     <thead>\n      <tr>\n        <th>\uB4F1\uC218</th>\n        <th>\uB2F9\uCCA8\uAE08</th>\n        <th>\uB2F9\uCCA8\uAC2F\uC218</th>\n      </tr>\n     </thead>\n     <tbody id=\"statistics-table-body\">\n     </tbody>\n     </table>\n     <div id=\"profit-ratio-text\"  class=\".result-container-section\"></div>\n     <button id=\"restart-button\"  class=\".result-container-section\">\uB2E4\uC2DC \uC2DC\uC791\uD558\uAE30</button>\n     </div>\n    </div>\n  </div>\n</section>"
+      value: "<section id=\"win-number-input-section\" aria-labelledby=\"win-number-input-title\" class=\"hide\">\n  <h1 id=\"win-number-input-title\" hidden>\uB2F9\uCCA8 \uBC88\uD638 \uC785\uB825 \uC139\uC158</h1>\n  <p>\uC9C0\uB09C \uC8FC \uB2F9\uCCA8\uBC88\uD638 6\uAC1C\uC640 \uBCF4\uB108\uC2A4 \uBC88\uD638 1\uAC1C\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.</p>\n  <form id=\"win-number-input-form\">\n    <div class=\"win-number-input-wrapper\">\n      <div>\n        <p>\uB2F9\uCCA8 \uBC88\uD638</p>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n      </div>\n\n      <div class=\"bonus-number-wrapper flex-column-align-end\">\n        <p>\uBCF4\uB108\uC2A4 \uBC88\uD638</p>\n        <input class=\"bonus-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n      </div>\n    </div>\n\n    <button id=\"result-button\">\uACB0\uACFC \uD655\uC778\uD558\uAE30</button>\n  </form>\n</section>\n<section id=\"win-statistics\" aria-labelledby=\"win-statistics-title\" class=\"hide\">\n  <h1 id=\"win-statistics-title\" hidden>\uB2F9\uCCA8 \uD1B5\uACC4 \uCD9C\uB825</h1>\n  <div class='modal-wrapper'>\n  <div id=\"result-container\"class=\"modal-container\">\n  <span class=\"modal-cancel-button\">\u274C</span>\n     <div id=\"result-contents\">\n     <table  class=\".result-container-section\">\n     <caption hidden>\uACB0\uACFC \uD14C\uC774\uBE14\uC785\uB2C8\uB2E4.</caption>\n     <thead>\n      <tr>\n        <th>\uB4F1\uC218</th>\n        <th>\uB2F9\uCCA8\uAE08</th>\n        <th>\uB2F9\uCCA8\uAC2F\uC218</th>\n      </tr>\n     </thead>\n     <tbody id=\"statistics-table-body\">\n     </tbody>\n     </table>\n     <div id=\"profit-ratio-text\"  class=\".result-container-section\"></div>\n     <button id=\"restart-button\"  class=\".result-container-section\">\uB2E4\uC2DC \uC2DC\uC791\uD558\uAE30</button>\n     </div>\n    </div>\n  </div>\n</section>"
     });
 
     this.$app = $app;
@@ -1087,7 +1087,7 @@ var LottoResultView = /*#__PURE__*/function () {
       var statistics = _ref2.statistics,
           profitRatio = _ref2.profitRatio;
       this.$statisticsTableBody.innerHTML = Object.keys(statistics).reduce(function (prev, currentKey) {
-        var price = _constants_win__WEBPACK_IMPORTED_MODULE_2__.RANK_PRICE[currentKey];
+        var price = _constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_PRICE[currentKey];
         var count = statistics[currentKey];
         return prev + _classPrivateMethodGet(_this, _generateStatisticsTableData, _generateStatisticsTableData2).call(_this, currentKey, price, count);
       }, '');
@@ -1335,7 +1335,7 @@ var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBP
 var ___CSS_LOADER_URL_REPLACEMENT_0___ = _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default()(___CSS_LOADER_URL_IMPORT_0___);
 var ___CSS_LOADER_URL_REPLACEMENT_1___ = _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default()(___CSS_LOADER_URL_IMPORT_1___);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "input[type='number']::-webkit-outer-spin-button,\ninput[type='number']::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n\ninput {\n  outline: none;\n}\n\nbody {\n  width: 98vw;\n  min-height: 90vh;\n  margin: auto;\n  background-color: rgba(0, 0, 0, 0.07);\n  font-family: 'NanumBarunGothic', sans-serif;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#app {\n  width: 25vw;\n  min-width: 414px;\n  padding: 50px;\n\n  background-color: #ffffff;\n  border: 1px solid rgba(0, 0, 0, 0.12);\n}\n\n.header-title {\n  font-size: 34px;\n  text-align: center;\n}\n\n#charge-input-form {\n  display: flex;\n  height: 36px;\n}\n\n#charge-input {\n  flex: 1;\n  margin-right: 20px;\n  border: 1px solid #b4b4b4;\n  border-radius: 4px;\n}\n\nbutton {\n  border-radius: 4px;\n  background-color: #00bcd4;\n  color: #ffffff;\n  border: 0;\n  min-height: 36px;\n\n  cursor: pointer;\n}\n\nsection {\n  margin-bottom: 20px;\n}\n\n#lotto-section {\n  display: flex;\n  flex-direction: row;\n}\n\n.lotto-wrapper {\n  flex: 1;\n}\n\n.lotto {\n  font-size: 34px;\n}\n\n.lotto .number {\n  font-size: 16px;\n}\n\n#lotto-container {\n  display: flex;\n  height: 350px;\n  background-color: rgba(0, 0, 0, 0.05);\n  border-radius: 4px;\n  padding: 20px;\n  margin: 10px;\n  overflow-y: scroll;\n}\n#lotto-container[data-visible-state='false'] {\n  flex-direction: row;\n  flex-wrap: wrap;\n  gap: 10px;\n}\n\n#lotto-container[data-visible-state='false'] .number {\n  display: none;\n}\n\n#lotto-container[data-visible-state='true'] {\n  flex-direction: column;\n}\n\n#lotto-container[data-visible-state='true'] .lotto {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n}\n\n.win-number-input-wrapper {\n  display: flex;\n  gap: 10px;\n  justify-content: space-between;\n}\n\n#result-button {\n  width: 100%;\n  margin-top: 10px;\n}\n\n.win-number-input-wrapper input {\n  width: 30px;\n  height: 30px;\n}\n\n.flex-column-align-end {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n}\n\n#align-converter-container {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n\n  position: relative;\n}\nlabel[for='align-converter']:hover::before {\n  content: '';\n\n  background-size: cover;\n  width: 200px;\n  height: 200px;\n\n  position: absolute;\n  right: -250px;\n}\n\n#align-converter-container[data-visible-state='false']\n  > label[for='align-converter']:hover::before {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\n}\n\n#align-converter-container[data-visible-state='true'] > label[for='align-converter']:hover::before {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_1___ + ");\n}\n\n.hide {\n  display: none;\n}\n.show {\n  display: block;\n}\n\n.modal-container#result-container {\n  /* padding: 20px; */\n  /* min-width: 300px; */\n  height: 400px;\n  overflow-y: scroll;\n}\n\n.modal-container > div {\n  width: 100%;\n  height: 100%;\n\n  text-align: center;\n}\n\n.modal-container > div > table {\n  width: 100%;\n  margin-bottom: 30px;\n}\n\ntable tr {\n  display: flex;\n  justify-content: space-between;\n  margin-bottom: 20px;\n}\n\ntable tr td,\nth {\n  width: 33%;\n}\n\n.modal-cancel-button {\n  cursor: pointer;\n}\n\n#result-contents > * {\n  margin-bottom: 30px;\n}\n", "",{"version":3,"sources":["webpack://./src/css/index.css"],"names":[],"mappings":"AAAA;;EAEE,wBAAwB;EACxB,SAAS;AACX;;AAEA;EACE,aAAa;AACf;;AAEA;EACE,WAAW;EACX,gBAAgB;EAChB,YAAY;EACZ,qCAAqC;EACrC,2CAA2C;;EAE3C,aAAa;EACb,uBAAuB;EACvB,mBAAmB;AACrB;;AAEA;EACE,WAAW;EACX,gBAAgB;EAChB,aAAa;;EAEb,yBAAyB;EACzB,qCAAqC;AACvC;;AAEA;EACE,eAAe;EACf,kBAAkB;AACpB;;AAEA;EACE,aAAa;EACb,YAAY;AACd;;AAEA;EACE,OAAO;EACP,kBAAkB;EAClB,yBAAyB;EACzB,kBAAkB;AACpB;;AAEA;EACE,kBAAkB;EAClB,yBAAyB;EACzB,cAAc;EACd,SAAS;EACT,gBAAgB;;EAEhB,eAAe;AACjB;;AAEA;EACE,mBAAmB;AACrB;;AAEA;EACE,aAAa;EACb,mBAAmB;AACrB;;AAEA;EACE,OAAO;AACT;;AAEA;EACE,eAAe;AACjB;;AAEA;EACE,eAAe;AACjB;;AAEA;EACE,aAAa;EACb,aAAa;EACb,qCAAqC;EACrC,kBAAkB;EAClB,aAAa;EACb,YAAY;EACZ,kBAAkB;AACpB;AACA;EACE,mBAAmB;EACnB,eAAe;EACf,SAAS;AACX;;AAEA;EACE,aAAa;AACf;;AAEA;EACE,sBAAsB;AACxB;;AAEA;EACE,aAAa;EACb,mBAAmB;EACnB,SAAS;AACX;;AAEA;EACE,aAAa;EACb,SAAS;EACT,8BAA8B;AAChC;;AAEA;EACE,WAAW;EACX,gBAAgB;AAClB;;AAEA;EACE,WAAW;EACX,YAAY;AACd;;AAEA;EACE,aAAa;EACb,sBAAsB;EACtB,qBAAqB;AACvB;;AAEA;EACE,aAAa;EACb,sBAAsB;EACtB,qBAAqB;;EAErB,kBAAkB;AACpB;AACA;EACE,WAAW;;EAEX,sBAAsB;EACtB,YAAY;EACZ,aAAa;;EAEb,kBAAkB;EAClB,aAAa;AACf;;AAEA;;EAEE,yDAA0F;AAC5F;;AAEA;EACE,yDAAwF;AAC1F;;AAEA;EACE,aAAa;AACf;AACA;EACE,cAAc;AAChB;;AAEA;EACE,mBAAmB;EACnB,sBAAsB;EACtB,aAAa;EACb,kBAAkB;AACpB;;AAEA;EACE,WAAW;EACX,YAAY;;EAEZ,kBAAkB;AACpB;;AAEA;EACE,WAAW;EACX,mBAAmB;AACrB;;AAEA;EACE,aAAa;EACb,8BAA8B;EAC9B,mBAAmB;AACrB;;AAEA;;EAEE,UAAU;AACZ;;AAEA;EACE,eAAe;AACjB;;AAEA;EACE,mBAAmB;AACrB","sourcesContent":["input[type='number']::-webkit-outer-spin-button,\ninput[type='number']::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n\ninput {\n  outline: none;\n}\n\nbody {\n  width: 98vw;\n  min-height: 90vh;\n  margin: auto;\n  background-color: rgba(0, 0, 0, 0.07);\n  font-family: 'NanumBarunGothic', sans-serif;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#app {\n  width: 25vw;\n  min-width: 414px;\n  padding: 50px;\n\n  background-color: #ffffff;\n  border: 1px solid rgba(0, 0, 0, 0.12);\n}\n\n.header-title {\n  font-size: 34px;\n  text-align: center;\n}\n\n#charge-input-form {\n  display: flex;\n  height: 36px;\n}\n\n#charge-input {\n  flex: 1;\n  margin-right: 20px;\n  border: 1px solid #b4b4b4;\n  border-radius: 4px;\n}\n\nbutton {\n  border-radius: 4px;\n  background-color: #00bcd4;\n  color: #ffffff;\n  border: 0;\n  min-height: 36px;\n\n  cursor: pointer;\n}\n\nsection {\n  margin-bottom: 20px;\n}\n\n#lotto-section {\n  display: flex;\n  flex-direction: row;\n}\n\n.lotto-wrapper {\n  flex: 1;\n}\n\n.lotto {\n  font-size: 34px;\n}\n\n.lotto .number {\n  font-size: 16px;\n}\n\n#lotto-container {\n  display: flex;\n  height: 350px;\n  background-color: rgba(0, 0, 0, 0.05);\n  border-radius: 4px;\n  padding: 20px;\n  margin: 10px;\n  overflow-y: scroll;\n}\n#lotto-container[data-visible-state='false'] {\n  flex-direction: row;\n  flex-wrap: wrap;\n  gap: 10px;\n}\n\n#lotto-container[data-visible-state='false'] .number {\n  display: none;\n}\n\n#lotto-container[data-visible-state='true'] {\n  flex-direction: column;\n}\n\n#lotto-container[data-visible-state='true'] .lotto {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n}\n\n.win-number-input-wrapper {\n  display: flex;\n  gap: 10px;\n  justify-content: space-between;\n}\n\n#result-button {\n  width: 100%;\n  margin-top: 10px;\n}\n\n.win-number-input-wrapper input {\n  width: 30px;\n  height: 30px;\n}\n\n.flex-column-align-end {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n}\n\n#align-converter-container {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n\n  position: relative;\n}\nlabel[for='align-converter']:hover::before {\n  content: '';\n\n  background-size: cover;\n  width: 200px;\n  height: 200px;\n\n  position: absolute;\n  right: -250px;\n}\n\n#align-converter-container[data-visible-state='false']\n  > label[for='align-converter']:hover::before {\n  background-image: url('/Users/jangjunhyeog/Wowahan/javascript-lotto/images/미리보기-번호보기.png');\n}\n\n#align-converter-container[data-visible-state='true'] > label[for='align-converter']:hover::before {\n  background-image: url('/Users/jangjunhyeog/Wowahan/javascript-lotto/images/미리보기-기본.png');\n}\n\n.hide {\n  display: none;\n}\n.show {\n  display: block;\n}\n\n.modal-container#result-container {\n  /* padding: 20px; */\n  /* min-width: 300px; */\n  height: 400px;\n  overflow-y: scroll;\n}\n\n.modal-container > div {\n  width: 100%;\n  height: 100%;\n\n  text-align: center;\n}\n\n.modal-container > div > table {\n  width: 100%;\n  margin-bottom: 30px;\n}\n\ntable tr {\n  display: flex;\n  justify-content: space-between;\n  margin-bottom: 20px;\n}\n\ntable tr td,\nth {\n  width: 33%;\n}\n\n.modal-cancel-button {\n  cursor: pointer;\n}\n\n#result-contents > * {\n  margin-bottom: 30px;\n}\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "input[type='number']::-webkit-outer-spin-button,\ninput[type='number']::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n\ninput {\n  outline: none;\n}\n\nbody {\n  width: 98vw;\n  min-height: 90vh;\n  margin: auto;\n  background-color: rgba(0, 0, 0, 0.07);\n  font-family: 'NanumBarunGothic', sans-serif;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#app {\n  width: 25vw;\n  min-width: 414px;\n  padding: 50px;\n\n  background-color: #ffffff;\n  border: 1px solid rgba(0, 0, 0, 0.12);\n}\n\n.header-title {\n  font-size: 34px;\n  text-align: center;\n}\n\n#charge-input-form {\n  display: flex;\n  height: 36px;\n}\n\n#charge-input {\n  flex: 1;\n  margin-right: 20px;\n  border: 1px solid #b4b4b4;\n  border-radius: 4px;\n}\n\nbutton {\n  border-radius: 4px;\n  background-color: #00bcd4;\n  color: #ffffff;\n  border: 0;\n  min-height: 36px;\n\n  cursor: pointer;\n}\n\nsection {\n  margin-bottom: 20px;\n}\n\n#lotto-section {\n  display: flex;\n  flex-direction: row;\n}\n\n.lotto-wrapper {\n  flex: 1;\n}\n\n.lotto {\n  font-size: 34px;\n}\n\n.lotto .number {\n  font-size: 16px;\n}\n\n#lotto-container {\n  display: flex;\n  height: 350px;\n  background-color: rgba(0, 0, 0, 0.05);\n  border-radius: 4px;\n  padding: 20px;\n  margin: 10px;\n  overflow-y: scroll;\n}\n#lotto-container[data-visible-state='false'] {\n  flex-direction: row;\n  flex-wrap: wrap;\n  gap: 10px;\n}\n\n#lotto-container[data-visible-state='false'] .number {\n  display: none;\n}\n\n#lotto-container[data-visible-state='true'] {\n  flex-direction: column;\n}\n\n#lotto-container[data-visible-state='true'] .lotto {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n}\n\n.win-number-input-wrapper {\n  display: flex;\n  gap: 10px;\n  justify-content: space-between;\n}\n\n#result-button {\n  width: 100%;\n  margin-top: 10px;\n}\n\n.win-number-input-wrapper input {\n  width: 30px;\n  height: 30px;\n}\n\n.flex-column-align-end {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n}\n/* align converter에 미리보기 기능을 추가한다. */\n#align-converter-container {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n\n  position: relative;\n}\nlabel[for='align-converter']:hover::before {\n  content: '';\n\n  background-size: cover;\n  width: 200px;\n  height: 200px;\n\n  position: absolute;\n  right: -220px;\n}\n\n#align-converter-container[data-visible-state='false']\n  > label[for='align-converter']:hover::before {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\n}\n\n#align-converter-container[data-visible-state='true'] > label[for='align-converter']:hover::before {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_1___ + ");\n}\n\n.hide {\n  display: none;\n}\n.show {\n  display: block;\n}\n\n.modal-container#result-container {\n  /* padding: 20px; */\n  /* min-width: 300px; */\n  height: 400px;\n  overflow-y: scroll;\n}\n\n.modal-container > div {\n  width: 100%;\n  height: 100%;\n\n  text-align: center;\n}\n\n.modal-container > div > table {\n  width: 100%;\n  margin-bottom: 30px;\n}\n\ntable tr {\n  display: flex;\n  justify-content: space-between;\n  margin-bottom: 20px;\n}\n\ntable tr td,\nth {\n  width: 33%;\n}\n\n.modal-cancel-button {\n  cursor: pointer;\n}\n\n#result-contents > * {\n  margin-bottom: 30px;\n}\n", "",{"version":3,"sources":["webpack://./src/css/index.css"],"names":[],"mappings":"AAAA;;EAEE,wBAAwB;EACxB,SAAS;AACX;;AAEA;EACE,aAAa;AACf;;AAEA;EACE,WAAW;EACX,gBAAgB;EAChB,YAAY;EACZ,qCAAqC;EACrC,2CAA2C;;EAE3C,aAAa;EACb,uBAAuB;EACvB,mBAAmB;AACrB;;AAEA;EACE,WAAW;EACX,gBAAgB;EAChB,aAAa;;EAEb,yBAAyB;EACzB,qCAAqC;AACvC;;AAEA;EACE,eAAe;EACf,kBAAkB;AACpB;;AAEA;EACE,aAAa;EACb,YAAY;AACd;;AAEA;EACE,OAAO;EACP,kBAAkB;EAClB,yBAAyB;EACzB,kBAAkB;AACpB;;AAEA;EACE,kBAAkB;EAClB,yBAAyB;EACzB,cAAc;EACd,SAAS;EACT,gBAAgB;;EAEhB,eAAe;AACjB;;AAEA;EACE,mBAAmB;AACrB;;AAEA;EACE,aAAa;EACb,mBAAmB;AACrB;;AAEA;EACE,OAAO;AACT;;AAEA;EACE,eAAe;AACjB;;AAEA;EACE,eAAe;AACjB;;AAEA;EACE,aAAa;EACb,aAAa;EACb,qCAAqC;EACrC,kBAAkB;EAClB,aAAa;EACb,YAAY;EACZ,kBAAkB;AACpB;AACA;EACE,mBAAmB;EACnB,eAAe;EACf,SAAS;AACX;;AAEA;EACE,aAAa;AACf;;AAEA;EACE,sBAAsB;AACxB;;AAEA;EACE,aAAa;EACb,mBAAmB;EACnB,SAAS;AACX;;AAEA;EACE,aAAa;EACb,SAAS;EACT,8BAA8B;AAChC;;AAEA;EACE,WAAW;EACX,gBAAgB;AAClB;;AAEA;EACE,WAAW;EACX,YAAY;AACd;;AAEA;EACE,aAAa;EACb,sBAAsB;EACtB,qBAAqB;AACvB;AACA,oCAAoC;AACpC;EACE,aAAa;EACb,sBAAsB;EACtB,qBAAqB;;EAErB,kBAAkB;AACpB;AACA;EACE,WAAW;;EAEX,sBAAsB;EACtB,YAAY;EACZ,aAAa;;EAEb,kBAAkB;EAClB,aAAa;AACf;;AAEA;;EAEE,yDAA0F;AAC5F;;AAEA;EACE,yDAAwF;AAC1F;;AAEA;EACE,aAAa;AACf;AACA;EACE,cAAc;AAChB;;AAEA;EACE,mBAAmB;EACnB,sBAAsB;EACtB,aAAa;EACb,kBAAkB;AACpB;;AAEA;EACE,WAAW;EACX,YAAY;;EAEZ,kBAAkB;AACpB;;AAEA;EACE,WAAW;EACX,mBAAmB;AACrB;;AAEA;EACE,aAAa;EACb,8BAA8B;EAC9B,mBAAmB;AACrB;;AAEA;;EAEE,UAAU;AACZ;;AAEA;EACE,eAAe;AACjB;;AAEA;EACE,mBAAmB;AACrB","sourcesContent":["input[type='number']::-webkit-outer-spin-button,\ninput[type='number']::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n\ninput {\n  outline: none;\n}\n\nbody {\n  width: 98vw;\n  min-height: 90vh;\n  margin: auto;\n  background-color: rgba(0, 0, 0, 0.07);\n  font-family: 'NanumBarunGothic', sans-serif;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#app {\n  width: 25vw;\n  min-width: 414px;\n  padding: 50px;\n\n  background-color: #ffffff;\n  border: 1px solid rgba(0, 0, 0, 0.12);\n}\n\n.header-title {\n  font-size: 34px;\n  text-align: center;\n}\n\n#charge-input-form {\n  display: flex;\n  height: 36px;\n}\n\n#charge-input {\n  flex: 1;\n  margin-right: 20px;\n  border: 1px solid #b4b4b4;\n  border-radius: 4px;\n}\n\nbutton {\n  border-radius: 4px;\n  background-color: #00bcd4;\n  color: #ffffff;\n  border: 0;\n  min-height: 36px;\n\n  cursor: pointer;\n}\n\nsection {\n  margin-bottom: 20px;\n}\n\n#lotto-section {\n  display: flex;\n  flex-direction: row;\n}\n\n.lotto-wrapper {\n  flex: 1;\n}\n\n.lotto {\n  font-size: 34px;\n}\n\n.lotto .number {\n  font-size: 16px;\n}\n\n#lotto-container {\n  display: flex;\n  height: 350px;\n  background-color: rgba(0, 0, 0, 0.05);\n  border-radius: 4px;\n  padding: 20px;\n  margin: 10px;\n  overflow-y: scroll;\n}\n#lotto-container[data-visible-state='false'] {\n  flex-direction: row;\n  flex-wrap: wrap;\n  gap: 10px;\n}\n\n#lotto-container[data-visible-state='false'] .number {\n  display: none;\n}\n\n#lotto-container[data-visible-state='true'] {\n  flex-direction: column;\n}\n\n#lotto-container[data-visible-state='true'] .lotto {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n}\n\n.win-number-input-wrapper {\n  display: flex;\n  gap: 10px;\n  justify-content: space-between;\n}\n\n#result-button {\n  width: 100%;\n  margin-top: 10px;\n}\n\n.win-number-input-wrapper input {\n  width: 30px;\n  height: 30px;\n}\n\n.flex-column-align-end {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n}\n/* align converter에 미리보기 기능을 추가한다. */\n#align-converter-container {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n\n  position: relative;\n}\nlabel[for='align-converter']:hover::before {\n  content: '';\n\n  background-size: cover;\n  width: 200px;\n  height: 200px;\n\n  position: absolute;\n  right: -220px;\n}\n\n#align-converter-container[data-visible-state='false']\n  > label[for='align-converter']:hover::before {\n  background-image: url('/Users/jangjunhyeog/Wowahan/javascript-lotto/images/미리보기-번호보기.png');\n}\n\n#align-converter-container[data-visible-state='true'] > label[for='align-converter']:hover::before {\n  background-image: url('/Users/jangjunhyeog/Wowahan/javascript-lotto/images/미리보기-기본.png');\n}\n\n.hide {\n  display: none;\n}\n.show {\n  display: block;\n}\n\n.modal-container#result-container {\n  /* padding: 20px; */\n  /* min-width: 300px; */\n  height: 400px;\n  overflow-y: scroll;\n}\n\n.modal-container > div {\n  width: 100%;\n  height: 100%;\n\n  text-align: center;\n}\n\n.modal-container > div > table {\n  width: 100%;\n  margin-bottom: 30px;\n}\n\ntable tr {\n  display: flex;\n  justify-content: space-between;\n  margin-bottom: 20px;\n}\n\ntable tr td,\nth {\n  width: 33%;\n}\n\n.modal-cancel-button {\n  cursor: pointer;\n}\n\n#result-contents > * {\n  margin-bottom: 30px;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
