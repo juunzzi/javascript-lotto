@@ -17,6 +17,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _domains__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./domains */ "./src/js/domains/index.js");
 /* harmony import */ var _constants_actions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./constants/actions */ "./src/js/constants/actions.js");
 /* harmony import */ var _utils_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils/dom */ "./src/js/utils/dom.js");
+/* harmony import */ var _utils_event__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./utils/event */ "./src/js/utils/event.js");
+/* harmony import */ var _constants_events__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./constants/events */ "./src/js/constants/events.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -43,8 +45,6 @@ function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedec
 
 function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
 
-function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
-
 function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
 
 function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
@@ -54,6 +54,10 @@ function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _
 function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
 
 function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
+
+function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
+
+
 
 
 
@@ -67,11 +71,15 @@ var _lottoViewManager = /*#__PURE__*/new WeakMap();
 
 var _initializeManagers = /*#__PURE__*/new WeakSet();
 
+var _bindEventHandler = /*#__PURE__*/new WeakSet();
+
 var LottoGameManager = /*#__PURE__*/function () {
   function LottoGameManager() {
     var _this = this;
 
     _classCallCheck(this, LottoGameManager);
+
+    _classPrivateMethodInitSpec(this, _bindEventHandler);
 
     _classPrivateMethodInitSpec(this, _initializeManagers);
 
@@ -85,7 +93,7 @@ var LottoGameManager = /*#__PURE__*/function () {
       value: null
     });
 
-    _defineProperty(this, "onSubmitChargeForm", function (e) {
+    _defineProperty(this, "onSubmitCharge", function (e) {
       e.preventDefault();
 
       try {
@@ -110,7 +118,7 @@ var LottoGameManager = /*#__PURE__*/function () {
       });
     });
 
-    _defineProperty(this, "onSubmitResultForm", function (e) {
+    _defineProperty(this, "onSubmitResult", function (e) {
       e.preventDefault();
 
       var winningNumberInputNodes = _toConsumableArray(e.target.querySelectorAll(_constants_selector__WEBPACK_IMPORTED_MODULE_0__.SELECTOR.WINNING_NUMBER_INPUT));
@@ -127,10 +135,6 @@ var LottoGameManager = /*#__PURE__*/function () {
       _this.triggerWinningNumberAction(winningNumbers, bonusNumber);
     });
 
-    _defineProperty(this, "onClickRestartButton", function () {
-      _this.start();
-    });
-
     _defineProperty(this, "onClickModal", function (_ref3) {
       var className = _ref3.target.className;
 
@@ -140,9 +144,24 @@ var LottoGameManager = /*#__PURE__*/function () {
         });
       }
     });
+
+    _defineProperty(this, "onClickRestartButton", function () {
+      _this.start();
+    });
   }
 
   _createClass(LottoGameManager, [{
+    key: "start",
+    value: function start() {
+      var _generateEventFactory = (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.generateEventFactory)(),
+          bindEvent = _generateEventFactory.bindEvent,
+          emitEvent = _generateEventFactory.emitEvent;
+
+      _classPrivateMethodGet(this, _bindEventHandler, _bindEventHandler2).call(this, bindEvent);
+
+      _classPrivateMethodGet(this, _initializeManagers, _initializeManagers2).call(this, emitEvent);
+    }
+  }, {
     key: "triggerChargeInputAction",
     value: function triggerChargeInputAction(chargeInput) {
       var lottoList = _classPrivateFieldGet(this, _lottoDomainManager).work({
@@ -181,31 +200,23 @@ var LottoGameManager = /*#__PURE__*/function () {
         alert(message);
       }
     }
-  }, {
-    key: "start",
-    value: function start() {
-      _classPrivateMethodGet(this, _initializeManagers, _initializeManagers2).call(this);
-    }
   }]);
 
   return LottoGameManager;
 }();
 
-function _initializeManagers2() {
+function _initializeManagers2(emitEvent) {
   _classPrivateFieldSet(this, _lottoDomainManager, new _domains__WEBPACK_IMPORTED_MODULE_2__["default"]());
 
-  _classPrivateFieldSet(this, _lottoViewManager, new _views__WEBPACK_IMPORTED_MODULE_1__["default"]());
+  _classPrivateFieldSet(this, _lottoViewManager, new _views__WEBPACK_IMPORTED_MODULE_1__["default"](emitEvent));
+}
 
-  _classPrivateFieldGet(this, _lottoViewManager).work({
-    payload: {
-      onSubmitChargeForm: this.onSubmitChargeForm,
-      onChangeAlignState: this.onChangeAlignState,
-      onSubmitResultForm: this.onSubmitResultForm,
-      onClickRestartButton: this.onClickRestartButton,
-      onClickModal: this.onClickModal
-    },
-    action: _constants_actions__WEBPACK_IMPORTED_MODULE_3__.VIEW_ACTION.BIND_EVENT_HANDLER
-  });
+function _bindEventHandler2(bindEvent) {
+  bindEvent(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.SUBMIT_CHARGE, this.onSubmitCharge);
+  bindEvent(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.CHANGE_ALIGN_STATE, this.onChangeAlignState);
+  bindEvent(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.SUBMIT_RESULT, this.onSubmitResult);
+  bindEvent(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.CLICK_RESTART_BUTTON, this.onClickRestartButton);
+  bindEvent(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.CLICK_MODAL, this.onClickModal);
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (LottoGameManager);
@@ -250,6 +261,26 @@ __webpack_require__.r(__webpack_exports__);
 var ERROR_MESSAGE = {
   CHARGE_IS_INVALIDATE: '금액은 1000원 이상 100000원 미만이어야합니다. 금액을 다시 입력해주세요.',
   WIN_NUMBER_IS_INVALIDATE: '당첨 번호는 1~45 사이의 숫자이며, 중복이 포함될 수 없습니다. 다시 입력해주세요'
+};
+
+/***/ }),
+
+/***/ "./src/js/constants/events.js":
+/*!************************************!*\
+  !*** ./src/js/constants/events.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "EVENT": () => (/* binding */ EVENT)
+/* harmony export */ });
+var EVENT = {
+  SUBMIT_CHARGE: 'onSubmitCharge',
+  CHANGE_ALIGN_STATE: ' onChangeAlignState',
+  SUBMIT_RESULT: 'onSubmitResult',
+  CLICK_RESTART_BUTTON: 'onClickRestartButton ',
+  CLICK_MODAL: 'onClickModal'
 };
 
 /***/ }),
@@ -299,7 +330,8 @@ var SELECTOR = {
   STATISTICS_TABLE_BODY: '#statistics-table-body',
   PROFIT_RATIO_TEXT: '#profit-ratio-text',
   RESTART_BUTTON: '#restart-button',
-  MODAL_CANCEL_BUTTON: '.modal-cancel-button'
+  MODAL_CANCEL_BUTTON: '.modal-cancel-button',
+  ALIGN_CONVERTER_CONTAINER: '#align-converter-container'
 };
 
 /***/ }),
@@ -435,6 +467,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _constants_win__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/win */ "./src/js/constants/win.js");
 /* harmony import */ var _utils_validator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/validator */ "./src/js/utils/validator.js");
 /* harmony import */ var _Lotto__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Lotto */ "./src/js/domains/Lotto.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -533,14 +571,12 @@ var LottoList = /*#__PURE__*/function () {
   }, {
     key: "changeStatisticsMap",
     value: function changeStatisticsMap(statisticsArray) {
-      var statisticsMap = {};
-      Object.values(_constants_win__WEBPACK_IMPORTED_MODULE_2__.RANK_KEYS).forEach(function (key) {
-        statisticsMap[key] = 0;
-      });
-      statisticsArray.forEach(function (result) {
-        statisticsMap[result] = statisticsMap[result] + 1;
-      });
-      return statisticsMap;
+      var statisticsMap = Object.values(_constants_win__WEBPACK_IMPORTED_MODULE_2__.RANK_KEYS).reduce(function (prev, key) {
+        return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, "".concat(key), 0));
+      }, {});
+      return statisticsArray.reduce(function (prev, result) {
+        return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, "".concat(result), prev[result] + 1));
+      }, statisticsMap);
     }
   }]);
 
@@ -680,6 +716,31 @@ var isCancelModal = function isCancelModal(className) {
 
 /***/ }),
 
+/***/ "./src/js/utils/event.js":
+/*!*******************************!*\
+  !*** ./src/js/utils/event.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "generateEventFactory": () => (/* binding */ generateEventFactory)
+/* harmony export */ });
+var generateEventFactory = function generateEventFactory() {
+  var eventListeners = {};
+  return {
+    bindEvent: function bindEvent(eventName, eventListener) {
+      eventListeners[eventName] = eventListener;
+    },
+    emitEvent: function emitEvent(eventName, e) {
+      var eventListener = eventListeners[eventName];
+      eventListener(e);
+    }
+  };
+};
+
+/***/ }),
+
 /***/ "./src/js/utils/gameUtil.js":
 /*!**********************************!*\
   !*** ./src/js/utils/gameUtil.js ***!
@@ -802,8 +863,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _constants_selector__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/selector */ "./src/js/constants/selector.js");
-/* harmony import */ var _utils_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/dom */ "./src/js/utils/dom.js");
+/* harmony import */ var _constants_events__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/events */ "./src/js/constants/events.js");
+/* harmony import */ var _constants_selector__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/selector */ "./src/js/constants/selector.js");
+/* harmony import */ var _utils_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/dom */ "./src/js/utils/dom.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -827,9 +889,12 @@ function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(
 
 
 
+
 var _initializeTemplate = /*#__PURE__*/new WeakSet();
 
 var _initializeDOM = /*#__PURE__*/new WeakSet();
+
+var _bindEventHandler = /*#__PURE__*/new WeakSet();
 
 var _generateLottoTemplate = /*#__PURE__*/new WeakSet();
 
@@ -837,11 +902,14 @@ var _basicTemplate = /*#__PURE__*/new WeakMap();
 
 var LottoContainerView = /*#__PURE__*/function () {
   function LottoContainerView(_ref) {
-    var $app = _ref.$app;
+    var $app = _ref.$app,
+        _emitEvent = _ref.emitEvent;
 
     _classCallCheck(this, LottoContainerView);
 
     _classPrivateMethodInitSpec(this, _generateLottoTemplate);
+
+    _classPrivateMethodInitSpec(this, _bindEventHandler);
 
     _classPrivateMethodInitSpec(this, _initializeDOM);
 
@@ -849,7 +917,7 @@ var LottoContainerView = /*#__PURE__*/function () {
 
     _classPrivateFieldInitSpec(this, _basicTemplate, {
       writable: true,
-      value: "\n  <h1 class=\"header-title\">\uD83C\uDFB1 \uD589\uC6B4\uC758 \uB85C\uB610</h1>\n  <section id=\"charge-input-section\" aria-labelledby=\"charge-input-section-title\">\n    <h1 id=\"charge-input-section-title\" hidden>\uAE08\uC561\uC744 \uC785\uB825\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <p>\uAD6C\uC785\uD560 \uAE08\uC561\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694</p>\n    <form id=\"charge-input-form\">\n      <input id=\"charge-input\" type=\"number\" placeholder=\"\uAE08\uC561\" />\n      <button id=\"charge-button\">\uAD6C\uC785</button>\n    </form>\n  </section>\n\n  <section id=\"lotto-section\" aria-labelledby=\"lotto-section-title\">\n    <h1 id=\"lotto-section-title\" hidden>\uAD6C\uB9E4\uD55C \uB85C\uB610\uB97C \uD655\uC778\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <div class=\"lotto-wrapper\">\n      <span id=\"purchased-message\"></span>\n      <div id=\"lotto-container\" data-visible-state=\"false\">\uB85C\uB610\uB97C \uAD6C\uB9E4\uD574\uC8FC\uC138\uC694 \uD83D\uDE33</div>\n    </div>\n    <div id=\"align-converter-container\" class=\"flex-column-align-end\">\n      <label for=\"align-converter\" class=\"flex-column-align-end\">\n        <span>\uBC88\uD638 \uBCF4\uAE30</span>\n        <input id=\"align-converter\" type=\"checkbox\" class=\"converter\" />\n        <span class=\"checkmark\">\n          <span class=\"circle\"></span>\n        </span>\n      </label>\n    </div>\n  </section>"
+      value: "\n  <h1 class=\"header-title\">\uD83C\uDFB1 \uD589\uC6B4\uC758 \uB85C\uB610</h1>\n  <section id=\"charge-input-section\" aria-labelledby=\"charge-input-section-title\">\n    <h1 id=\"charge-input-section-title\" hidden>\uAE08\uC561\uC744 \uC785\uB825\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <p>\uAD6C\uC785\uD560 \uAE08\uC561\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694</p>\n    <form id=\"charge-input-form\">\n      <input id=\"charge-input\" type=\"number\" placeholder=\"\uAE08\uC561\" min=\"1000\" max=\"100000\"/>\n      <button id=\"charge-button\">\uAD6C\uC785</button>\n    </form>\n  </section>\n\n  <section id=\"lotto-section\" aria-labelledby=\"lotto-section-title\">\n    <h1 id=\"lotto-section-title\" hidden>\uAD6C\uB9E4\uD55C \uB85C\uB610\uB97C \uD655\uC778\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <div class=\"lotto-wrapper\">\n      <span id=\"purchased-message\"></span>\n      <div id=\"lotto-container\" data-visible-state=\"false\">\uB85C\uB610\uB97C \uAD6C\uB9E4\uD574\uC8FC\uC138\uC694 \uD83D\uDE33</div>\n    </div>\n    <div id=\"align-converter-container\" class=\"flex-column-align-end\" data-visible-state=\"false\">\n      <label for=\"align-converter\" class=\"flex-column-align-end\">\n        <span>\uBC88\uD638 \uBCF4\uAE30</span>\n        <input id=\"align-converter\" type=\"checkbox\" class=\"converter\" />\n        <span class=\"checkmark\">\n          <span class=\"circle\"></span>\n        </span>\n      </label>\n    </div>\n  </section>"
     });
 
     this.$app = $app;
@@ -857,17 +925,11 @@ var LottoContainerView = /*#__PURE__*/function () {
     _classPrivateMethodGet(this, _initializeTemplate, _initializeTemplate2).call(this);
 
     _classPrivateMethodGet(this, _initializeDOM, _initializeDOM2).call(this);
+
+    _classPrivateMethodGet(this, _bindEventHandler, _bindEventHandler2).call(this, _emitEvent);
   }
 
   _createClass(LottoContainerView, [{
-    key: "bindEventHandler",
-    value: function bindEventHandler(_ref2) {
-      var onSubmitChargeForm = _ref2.onSubmitChargeForm,
-          onChangeAlignState = _ref2.onChangeAlignState;
-      this.$chargeForm.addEventListener('submit', onSubmitChargeForm);
-      this.$alignConverter.addEventListener('change', onChangeAlignState);
-    }
-  }, {
     key: "renderLottoSection",
     value: function renderLottoSection(lottoList) {
       this.renderPurchasedMessage(lottoList.length);
@@ -891,6 +953,7 @@ var LottoContainerView = /*#__PURE__*/function () {
     key: "renderAlignState",
     value: function renderAlignState(visibleState) {
       this.$lottoContainer.setAttribute('data-visible-state', visibleState);
+      this.$alignConverterContainer.setAttribute('data-visible-state', visibleState);
     }
   }]);
 
@@ -902,14 +965,24 @@ function _initializeTemplate2() {
 }
 
 function _initializeDOM2() {
-  this.$chargeForm = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_1__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_0__.SELECTOR.CHARGE_INPUT_FORM);
-  this.$alignConverter = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_1__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_0__.SELECTOR.ALIGN_CONVERTER);
-  this.$lottoContainer = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_1__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_0__.SELECTOR.LOTTO_CONTAINER);
-  this.$purchasedMessage = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_1__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_0__.SELECTOR.PURCHASED_MESSAGE);
+  this.$chargeForm = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.CHARGE_INPUT_FORM);
+  this.$alignConverter = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.ALIGN_CONVERTER);
+  this.$lottoContainer = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.LOTTO_CONTAINER);
+  this.$purchasedMessage = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.PURCHASED_MESSAGE);
+  this.$alignConverterContainer = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.ALIGN_CONVERTER_CONTAINER);
 }
 
-function _generateLottoTemplate2(_ref3) {
-  var lottoNumbers = _ref3.lottoNumbers;
+function _bindEventHandler2(emitEvent) {
+  this.$chargeForm.addEventListener('submit', function (e) {
+    return emitEvent(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.SUBMIT_CHARGE, e);
+  });
+  this.$alignConverter.addEventListener('change', function (e) {
+    return emitEvent(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CHANGE_ALIGN_STATE, e);
+  });
+}
+
+function _generateLottoTemplate2(_ref2) {
+  var lottoNumbers = _ref2.lottoNumbers;
   return "<div class=\"lotto\">\n      <span>\uD83C\uDF9F\uFE0F</span>\n      <span class=\"number\">".concat(lottoNumbers.join(', '), "</span>\n      </div>");
 }
 
@@ -927,10 +1000,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _constants_selector__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/selector */ "./src/js/constants/selector.js");
-/* harmony import */ var _constants_win__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/win */ "./src/js/constants/win.js");
-/* harmony import */ var _utils_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/dom */ "./src/js/utils/dom.js");
-/* harmony import */ var _utils_util__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/util */ "./src/js/utils/util.js");
+/* harmony import */ var _constants_events__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/events */ "./src/js/constants/events.js");
+/* harmony import */ var _constants_selector__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/selector */ "./src/js/constants/selector.js");
+/* harmony import */ var _constants_win__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/win */ "./src/js/constants/win.js");
+/* harmony import */ var _utils_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/dom */ "./src/js/utils/dom.js");
+/* harmony import */ var _utils_util__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/util */ "./src/js/utils/util.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -956,9 +1030,12 @@ function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(
 
 
 
+
 var _initializeTemplate = /*#__PURE__*/new WeakSet();
 
 var _initializeDOM = /*#__PURE__*/new WeakSet();
+
+var _bindEventHandler = /*#__PURE__*/new WeakSet();
 
 var _generateStatisticsTableData = /*#__PURE__*/new WeakSet();
 
@@ -968,7 +1045,8 @@ var _basicTemplate = /*#__PURE__*/new WeakMap();
 
 var LottoResultView = /*#__PURE__*/function () {
   function LottoResultView(_ref) {
-    var $app = _ref.$app;
+    var $app = _ref.$app,
+        _emitEvent = _ref.emitEvent;
 
     _classCallCheck(this, LottoResultView);
 
@@ -976,13 +1054,15 @@ var LottoResultView = /*#__PURE__*/function () {
 
     _classPrivateMethodInitSpec(this, _generateStatisticsTableData);
 
+    _classPrivateMethodInitSpec(this, _bindEventHandler);
+
     _classPrivateMethodInitSpec(this, _initializeDOM);
 
     _classPrivateMethodInitSpec(this, _initializeTemplate);
 
     _classPrivateFieldInitSpec(this, _basicTemplate, {
       writable: true,
-      value: "<section id=\"win-number-input-section\" aria-labelledby=\"win-number-input-title\" class=\"hide\">\n  <h1 id=\"win-number-input-title\" hidden>\uB2F9\uCCA8 \uBC88\uD638 \uC785\uB825 \uC139\uC158</h1>\n  <p>\uC9C0\uB09C \uC8FC \uB2F9\uCCA8\uBC88\uD638 6\uAC1C\uC640 \uBCF4\uB108\uC2A4 \uBC88\uD638 1\uAC1C\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.</p>\n  <form id=\"win-number-input-form\">\n    <div class=\"win-number-input-wrapper\">\n      <div>\n        <p>\uB2F9\uCCA8 \uBC88\uD638</p>\n        <input class=\"winning-number-input\" type=\"number\" />\n        <input class=\"winning-number-input\" type=\"number\" />\n        <input class=\"winning-number-input\" type=\"number\" />\n        <input class=\"winning-number-input\" type=\"number\" />\n        <input class=\"winning-number-input\" type=\"number\" />\n        <input class=\"winning-number-input\" type=\"number\" />\n      </div>\n\n      <div class=\"bonus-number-wrapper flex-column-align-end\">\n        <p>\uBCF4\uB108\uC2A4 \uBC88\uD638</p>\n        <input class=\"bonus-number-input\" type=\"number\" />\n      </div>\n    </div>\n\n    <button id=\"result-button\">\uACB0\uACFC \uD655\uC778\uD558\uAE30</button>\n  </form>\n</section>\n<section id=\"win-statistics\" aria-labelledby=\"win-statistics-title\" class=\"hide\">\n  <h1 id=\"win-statistics-title\" hidden>\uB2F9\uCCA8 \uD1B5\uACC4 \uCD9C\uB825</h1>\n  <div class='modal-wrapper'>\n  <div id=\"result-container\"class=\"modal-container\">\n  <span class=\"modal-cancel-button\">\u274C</span>\n     <div id=\"result-contents\">\n     <table  class=\".result-container-section\">\n     <thead>\n      <tr>\n        <th>\uB4F1\uC218</th>\n        <th>\uB2F9\uCCA8\uAE08</th>\n        <th>\uB2F9\uCCA8\uAC2F\uC218</th>\n      </tr>\n     </thead>\n     <tbody id=\"statistics-table-body\">\n     </tbody>\n     </table>\n     <div id=\"profit-ratio-text\"  class=\".result-container-section\"></div>\n     <button id=\"restart-button\"  class=\".result-container-section\">\uB2E4\uC2DC \uC2DC\uC791\uD558\uAE30</button>\n     </div>\n    </div>\n  </div>\n</section>"
+      value: "<section id=\"win-number-input-section\" aria-labelledby=\"win-number-input-title\" class=\"hide\">\n  <h1 id=\"win-number-input-title\" hidden>\uB2F9\uCCA8 \uBC88\uD638 \uC785\uB825 \uC139\uC158</h1>\n  <p>\uC9C0\uB09C \uC8FC \uB2F9\uCCA8\uBC88\uD638 6\uAC1C\uC640 \uBCF4\uB108\uC2A4 \uBC88\uD638 1\uAC1C\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.</p>\n  <form id=\"win-number-input-form\">\n    <div class=\"win-number-input-wrapper\">\n      <div>\n        <p>\uB2F9\uCCA8 \uBC88\uD638</p>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required/>\n      </div>\n\n      <div class=\"bonus-number-wrapper flex-column-align-end\">\n        <p>\uBCF4\uB108\uC2A4 \uBC88\uD638</p>\n        <input class=\"bonus-number-input\" type=\"number\" min=\"1\" max=\"45\" required/>\n      </div>\n    </div>\n\n    <button id=\"result-button\">\uACB0\uACFC \uD655\uC778\uD558\uAE30</button>\n  </form>\n</section>\n<section id=\"win-statistics\" aria-labelledby=\"win-statistics-title\" class=\"hide\">\n  <h1 id=\"win-statistics-title\" hidden>\uB2F9\uCCA8 \uD1B5\uACC4 \uCD9C\uB825</h1>\n  <div class='modal-wrapper'>\n  <div id=\"result-container\"class=\"modal-container\">\n  <span class=\"modal-cancel-button\">\u274C</span>\n     <div id=\"result-contents\">\n     <table  class=\".result-container-section\">\n     <thead>\n      <tr>\n        <th>\uB4F1\uC218</th>\n        <th>\uB2F9\uCCA8\uAE08</th>\n        <th>\uB2F9\uCCA8\uAC2F\uC218</th>\n      </tr>\n     </thead>\n     <tbody id=\"statistics-table-body\">\n     </tbody>\n     </table>\n     <div id=\"profit-ratio-text\"  class=\".result-container-section\"></div>\n     <button id=\"restart-button\"  class=\".result-container-section\">\uB2E4\uC2DC \uC2DC\uC791\uD558\uAE30</button>\n     </div>\n    </div>\n  </div>\n</section>"
     });
 
     this.$app = $app;
@@ -990,46 +1070,37 @@ var LottoResultView = /*#__PURE__*/function () {
     _classPrivateMethodGet(this, _initializeTemplate, _initializeTemplate2).call(this);
 
     _classPrivateMethodGet(this, _initializeDOM, _initializeDOM2).call(this);
+
+    _classPrivateMethodGet(this, _bindEventHandler, _bindEventHandler2).call(this, _emitEvent);
   }
 
   _createClass(LottoResultView, [{
-    key: "bindEventHandler",
-    value: function bindEventHandler(_ref2) {
-      var onSubmitResultForm = _ref2.onSubmitResultForm,
-          onClickRestartButton = _ref2.onClickRestartButton,
-          onClickModal = _ref2.onClickModal;
-      this.$winNumberInputForm.addEventListener('submit', onSubmitResultForm);
-      this.$restartButton.addEventListener('click', onClickRestartButton);
-      this.$winStatistics.addEventListener('click', onClickModal);
-    }
-  }, {
     key: "showWinNumberInputSection",
     value: function showWinNumberInputSection() {
       this.$winNumberInputSection.classList.replace('hide', 'show');
     }
   }, {
-    key: "renderStatisticsModal",
-    value: function renderStatisticsModal(_ref3) {
+    key: "renderStatisticsModalContents",
+    value: function renderStatisticsModalContents(_ref2) {
       var _this = this;
 
-      var statistics = _ref3.statistics,
-          profitRatio = _ref3.profitRatio;
-      this.showWinStatisticsModal();
+      var statistics = _ref2.statistics,
+          profitRatio = _ref2.profitRatio;
       this.$statisticsTableBody.innerHTML = Object.keys(statistics).reduce(function (prev, currentKey) {
-        var price = _constants_win__WEBPACK_IMPORTED_MODULE_1__.RANK_PRICE[currentKey];
+        var price = _constants_win__WEBPACK_IMPORTED_MODULE_2__.RANK_PRICE[currentKey];
         var count = statistics[currentKey];
         return prev + _classPrivateMethodGet(_this, _generateStatisticsTableData, _generateStatisticsTableData2).call(_this, currentKey, price, count);
       }, '');
       this.$profitRatioText.innerHTML = _classPrivateMethodGet(this, _generateProfitRatioText, _generateProfitRatioText2).call(this, profitRatio);
     }
   }, {
-    key: "hideWinStatisticsModal",
-    value: function hideWinStatisticsModal() {
+    key: "hideStatisticsModal",
+    value: function hideStatisticsModal() {
       this.$winStatistics.classList.replace('show', 'hide');
     }
   }, {
-    key: "showWinStatisticsModal",
-    value: function showWinStatisticsModal() {
+    key: "showStatisticsModal",
+    value: function showStatisticsModal() {
       this.$winStatistics.classList.replace('hide', 'show');
     }
   }]);
@@ -1042,17 +1113,29 @@ function _initializeTemplate2() {
 }
 
 function _initializeDOM2() {
-  this.$winNumberInputSection = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_0__.SELECTOR.WIN_NUMBER_INPUT_SECTION);
-  this.$winNumberInputForm = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_0__.SELECTOR.WIN_NUMBER_INPUT_FORM);
-  this.$winStatistics = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_0__.SELECTOR.WIN_STATISTICS);
-  this.$statisticsTableBody = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_0__.SELECTOR.STATISTICS_TABLE_BODY);
-  this.$profitRatioText = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_0__.SELECTOR.PROFIT_RATIO_TEXT);
-  this.$restartButton = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_0__.SELECTOR.RESTART_BUTTON);
-  this.$modalCancelButton = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_0__.SELECTOR.MODAL_CANCEL_BUTTON);
+  this.$winNumberInputSection = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.WIN_NUMBER_INPUT_SECTION);
+  this.$winNumberInputForm = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.WIN_NUMBER_INPUT_FORM);
+  this.$winStatistics = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.WIN_STATISTICS);
+  this.$statisticsTableBody = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.STATISTICS_TABLE_BODY);
+  this.$profitRatioText = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.PROFIT_RATIO_TEXT);
+  this.$restartButton = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.RESTART_BUTTON);
+  this.$modalCancelButton = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.MODAL_CANCEL_BUTTON);
+}
+
+function _bindEventHandler2(emitEvent) {
+  this.$winNumberInputForm.addEventListener('submit', function (e) {
+    return emitEvent(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.SUBMIT_RESULT, e);
+  });
+  this.$restartButton.addEventListener('click', function (e) {
+    return emitEvent(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_RESTART_BUTTON, e);
+  });
+  this.$winStatistics.addEventListener('click', function (e) {
+    return emitEvent(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_MODAL, e);
+  });
 }
 
 function _generateStatisticsTableData2(currentKey, price, count) {
-  return "<tr><td>".concat(currentKey, "</td><td>").concat((0,_utils_util__WEBPACK_IMPORTED_MODULE_3__.changeCurrencyFormat)(price), "</td><td>").concat(count, "</td> </tr>");
+  return "<tr><td>".concat(currentKey, "</td><td>").concat((0,_utils_util__WEBPACK_IMPORTED_MODULE_4__.changeCurrencyFormat)(price), "</td><td>").concat(count, "</td> </tr>");
 }
 
 function _generateProfitRatioText2(profitRatio) {
@@ -1118,18 +1201,14 @@ var _initializeViews = /*#__PURE__*/new WeakSet();
 
 var _clear = /*#__PURE__*/new WeakSet();
 
-var _bindEventHandlers = /*#__PURE__*/new WeakSet();
-
 var _reducer = /*#__PURE__*/new WeakMap();
 
 var LottoViewManager = /*#__PURE__*/function () {
-  function LottoViewManager() {
+  function LottoViewManager(_emitEvent) {
     var _this = this,
         _value;
 
     _classCallCheck(this, LottoViewManager);
-
-    _classPrivateMethodInitSpec(this, _bindEventHandlers);
 
     _classPrivateMethodInitSpec(this, _clear);
 
@@ -1154,11 +1233,11 @@ var LottoViewManager = /*#__PURE__*/function () {
       }), _defineProperty(_value, "".concat(_constants_actions__WEBPACK_IMPORTED_MODULE_0__.VIEW_ACTION.UPDATE_VISIBLE_STATE), function _(payload) {
         _classPrivateFieldGet(_this, _containerView).renderAlignState(payload);
       }), _defineProperty(_value, "".concat(_constants_actions__WEBPACK_IMPORTED_MODULE_0__.VIEW_ACTION.RENDER_STATISTICS), function _(payload) {
-        _classPrivateFieldGet(_this, _resultView).renderStatisticsModal(payload);
+        _classPrivateFieldGet(_this, _resultView).showStatisticsModal();
+
+        _classPrivateFieldGet(_this, _resultView).renderStatisticsModalContents(payload);
       }), _defineProperty(_value, "".concat(_constants_actions__WEBPACK_IMPORTED_MODULE_0__.VIEW_ACTION.MODAL_CANCEL), function _() {
-        _classPrivateFieldGet(_this, _resultView).hideWinStatisticsModal();
-      }), _defineProperty(_value, "".concat(_constants_actions__WEBPACK_IMPORTED_MODULE_0__.VIEW_ACTION.BIND_EVENT_HANDLER), function _(payload) {
-        _classPrivateMethodGet(_this, _bindEventHandlers, _bindEventHandlers2).call(_this, payload);
+        _classPrivateFieldGet(_this, _resultView).hideStatisticsModal();
       }), _value)
     });
 
@@ -1166,7 +1245,7 @@ var LottoViewManager = /*#__PURE__*/function () {
 
     _classPrivateMethodGet(this, _clear, _clear2).call(this);
 
-    _classPrivateMethodGet(this, _initializeViews, _initializeViews2).call(this);
+    _classPrivateMethodGet(this, _initializeViews, _initializeViews2).call(this, _emitEvent);
   }
 
   _createClass(LottoViewManager, [{
@@ -1184,37 +1263,20 @@ var LottoViewManager = /*#__PURE__*/function () {
   return LottoViewManager;
 }();
 
-function _initializeViews2() {
+function _initializeViews2(emitEvent) {
   _classPrivateFieldSet(this, _containerView, new _LottoContainerView__WEBPACK_IMPORTED_MODULE_3__["default"]({
-    $app: this.$app
+    $app: this.$app,
+    emitEvent: emitEvent
   }));
 
   _classPrivateFieldSet(this, _resultView, new _LottoResultView__WEBPACK_IMPORTED_MODULE_4__["default"]({
-    $app: this.$app
+    $app: this.$app,
+    emitEvent: emitEvent
   }));
 }
 
 function _clear2() {
   this.$app.innerHTML = '';
-}
-
-function _bindEventHandlers2(_ref2) {
-  var onSubmitChargeForm = _ref2.onSubmitChargeForm,
-      onChangeAlignState = _ref2.onChangeAlignState,
-      onSubmitResultForm = _ref2.onSubmitResultForm,
-      onClickRestartButton = _ref2.onClickRestartButton,
-      onClickModal = _ref2.onClickModal;
-
-  _classPrivateFieldGet(this, _containerView).bindEventHandler({
-    onSubmitChargeForm: onSubmitChargeForm,
-    onChangeAlignState: onChangeAlignState
-  });
-
-  _classPrivateFieldGet(this, _resultView).bindEventHandler({
-    onSubmitResultForm: onSubmitResultForm,
-    onClickRestartButton: onClickRestartButton,
-    onClickModal: onClickModal
-  });
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (LottoViewManager);
@@ -1240,7 +1302,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".converter {\n  position: absolute;\n  opacity: 0;\n  cursor: pointer;\n  height: 0;\n  width: 0;\n}\n.checkmark {\n  display: block;\n  position: relative;\n  margin-top: 1rem;\n  top: 0;\n  right: 0;\n  height: 14px;\n  width: 34px;\n  background-color: rgba(33, 33, 33, 0.08);\n  border-radius: 7px;\n}\n.converter:checked ~ .checkmark {\n  background-color: #80deea;\n}\n\n.checkmark .circle {\n  width: 20px;\n  height: 20px;\n  border-radius: 100%;\n  position: absolute;\n  top: -3px;\n  transition: 0.2s transform;\n}\n.converter:checked ~ .checkmark .circle {\n  background-color: #00bcd4;\n  transform: translateX(70%);\n}\n.converter ~ .checkmark .circle {\n  background-color: #ededed;\n}\n", "",{"version":3,"sources":["webpack://./src/css/converter.css"],"names":[],"mappings":"AAAA;EACE,kBAAkB;EAClB,UAAU;EACV,eAAe;EACf,SAAS;EACT,QAAQ;AACV;AACA;EACE,cAAc;EACd,kBAAkB;EAClB,gBAAgB;EAChB,MAAM;EACN,QAAQ;EACR,YAAY;EACZ,WAAW;EACX,wCAAwC;EACxC,kBAAkB;AACpB;AACA;EACE,yBAAyB;AAC3B;;AAEA;EACE,WAAW;EACX,YAAY;EACZ,mBAAmB;EACnB,kBAAkB;EAClB,SAAS;EACT,0BAA0B;AAC5B;AACA;EACE,yBAAyB;EACzB,0BAA0B;AAC5B;AACA;EACE,yBAAyB;AAC3B","sourcesContent":[".converter {\n  position: absolute;\n  opacity: 0;\n  cursor: pointer;\n  height: 0;\n  width: 0;\n}\n.checkmark {\n  display: block;\n  position: relative;\n  margin-top: 1rem;\n  top: 0;\n  right: 0;\n  height: 14px;\n  width: 34px;\n  background-color: rgba(33, 33, 33, 0.08);\n  border-radius: 7px;\n}\n.converter:checked ~ .checkmark {\n  background-color: #80deea;\n}\n\n.checkmark .circle {\n  width: 20px;\n  height: 20px;\n  border-radius: 100%;\n  position: absolute;\n  top: -3px;\n  transition: 0.2s transform;\n}\n.converter:checked ~ .checkmark .circle {\n  background-color: #00bcd4;\n  transform: translateX(70%);\n}\n.converter ~ .checkmark .circle {\n  background-color: #ededed;\n}\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, ".converter {\n  position: absolute;\n  opacity: 0;\n  height: 0;\n  width: 0;\n}\n.checkmark {\n  cursor: pointer;\n\n  display: block;\n  position: relative;\n  margin-top: 1rem;\n  top: 0;\n  right: 0;\n  height: 14px;\n  width: 34px;\n  background-color: rgba(33, 33, 33, 0.08);\n  border-radius: 7px;\n}\n.converter:checked ~ .checkmark {\n  background-color: #80deea;\n}\n\n.checkmark .circle {\n  width: 20px;\n  height: 20px;\n  border-radius: 100%;\n  position: absolute;\n  top: -3px;\n  transition: 0.2s transform;\n}\n.converter:checked ~ .checkmark .circle {\n  background-color: #00bcd4;\n  transform: translateX(70%);\n}\n.converter ~ .checkmark .circle {\n  background-color: #ededed;\n}\n\n.converter:hover {\n  background-color: red;\n}\n", "",{"version":3,"sources":["webpack://./src/css/converter.css"],"names":[],"mappings":"AAAA;EACE,kBAAkB;EAClB,UAAU;EACV,SAAS;EACT,QAAQ;AACV;AACA;EACE,eAAe;;EAEf,cAAc;EACd,kBAAkB;EAClB,gBAAgB;EAChB,MAAM;EACN,QAAQ;EACR,YAAY;EACZ,WAAW;EACX,wCAAwC;EACxC,kBAAkB;AACpB;AACA;EACE,yBAAyB;AAC3B;;AAEA;EACE,WAAW;EACX,YAAY;EACZ,mBAAmB;EACnB,kBAAkB;EAClB,SAAS;EACT,0BAA0B;AAC5B;AACA;EACE,yBAAyB;EACzB,0BAA0B;AAC5B;AACA;EACE,yBAAyB;AAC3B;;AAEA;EACE,qBAAqB;AACvB","sourcesContent":[".converter {\n  position: absolute;\n  opacity: 0;\n  height: 0;\n  width: 0;\n}\n.checkmark {\n  cursor: pointer;\n\n  display: block;\n  position: relative;\n  margin-top: 1rem;\n  top: 0;\n  right: 0;\n  height: 14px;\n  width: 34px;\n  background-color: rgba(33, 33, 33, 0.08);\n  border-radius: 7px;\n}\n.converter:checked ~ .checkmark {\n  background-color: #80deea;\n}\n\n.checkmark .circle {\n  width: 20px;\n  height: 20px;\n  border-radius: 100%;\n  position: absolute;\n  top: -3px;\n  transition: 0.2s transform;\n}\n.converter:checked ~ .checkmark .circle {\n  background-color: #00bcd4;\n  transform: translateX(70%);\n}\n.converter ~ .checkmark .circle {\n  background-color: #ededed;\n}\n\n.converter:hover {\n  background-color: red;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1261,12 +1323,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 /* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/getUrl.js */ "./node_modules/css-loader/dist/runtime/getUrl.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2__);
 // Imports
 
 
+
+var ___CSS_LOADER_URL_IMPORT_0___ = new URL(/* asset import */ __webpack_require__(/*! ./images/미리보기-번호보기.png */ "./images/미리보기-번호보기.png"), __webpack_require__.b);
+var ___CSS_LOADER_URL_IMPORT_1___ = new URL(/* asset import */ __webpack_require__(/*! ./images/미리보기-기본.png */ "./images/미리보기-기본.png"), __webpack_require__.b);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+var ___CSS_LOADER_URL_REPLACEMENT_0___ = _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default()(___CSS_LOADER_URL_IMPORT_0___);
+var ___CSS_LOADER_URL_REPLACEMENT_1___ = _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default()(___CSS_LOADER_URL_IMPORT_1___);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "input[type='number']::-webkit-outer-spin-button,\ninput[type='number']::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n\ninput {\n  outline: none;\n}\n\nbody {\n  width: 98vw;\n  min-height: 90vh;\n  margin: auto;\n  background-color: rgba(0, 0, 0, 0.07);\n  font-family: 'NanumBarunGothic', sans-serif;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#app {\n  width: 25vw;\n  min-width: 414px;\n  padding: 50px;\n\n  background-color: #ffffff;\n  border: 1px solid rgba(0, 0, 0, 0.12);\n}\n\n.header-title {\n  font-size: 34px;\n  text-align: center;\n}\n\n#charge-input-form {\n  display: flex;\n  height: 36px;\n}\n\n#charge-input {\n  flex: 1;\n  margin-right: 20px;\n  border: 1px solid #b4b4b4;\n  border-radius: 4px;\n}\n\nbutton {\n  border-radius: 4px;\n  background-color: #00bcd4;\n  color: #ffffff;\n  border: 0;\n  min-height: 36px;\n}\n\nsection {\n  margin-bottom: 20px;\n}\n\n#lotto-section {\n  display: flex;\n  flex-direction: row;\n}\n\n.lotto-wrapper {\n  flex: 1;\n}\n\n.lotto {\n  font-size: 34px;\n}\n\n.lotto .number {\n  font-size: 16px;\n}\n\n#lotto-container {\n  display: flex;\n  height: 350px;\n  background-color: rgba(0, 0, 0, 0.05);\n  border-radius: 4px;\n  padding: 20px;\n  margin: 10px;\n  overflow-y: scroll;\n}\n#lotto-container[data-visible-state='false'] {\n  flex-direction: row;\n  flex-wrap: wrap;\n  gap: 10px;\n}\n\n#lotto-container[data-visible-state='false'] .number {\n  display: none;\n}\n\n#lotto-container[data-visible-state='true'] {\n  flex-direction: column;\n}\n\n#lotto-container[data-visible-state='true'] .lotto {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n}\n\n.win-number-input-wrapper {\n  display: flex;\n  gap: 10px;\n  justify-content: space-between;\n}\n\n#result-button {\n  width: 100%;\n  margin-top: 10px;\n}\n\n.win-number-input-wrapper input {\n  width: 30px;\n  height: 30px;\n}\n\n.flex-column-align-end {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n}\n\n#align-converter-container {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n}\n\n.hide {\n  display: none;\n}\n.show {\n  display: block;\n}\n\n.modal-container#result-container {\n  /* padding: 20px; */\n  /* min-width: 300px; */\n  height: 400px;\n  overflow-y: scroll;\n}\n\n.modal-container > div {\n  width: 100%;\n  height: 100%;\n\n  text-align: center;\n}\n\n.modal-container > div > table {\n  width: 100%;\n  margin-bottom: 30px;\n}\n\ntable tr {\n  display: flex;\n  justify-content: space-between;\n  margin-bottom: 20px;\n}\n\ntable tr td,\nth {\n  width: 33%;\n}\n\n.modal-cancel-button {\n  cursor: pointer;\n}\n\n#result-contents > * {\n  margin-bottom: 30px;\n}\n", "",{"version":3,"sources":["webpack://./src/css/index.css"],"names":[],"mappings":"AAAA;;EAEE,wBAAwB;EACxB,SAAS;AACX;;AAEA;EACE,aAAa;AACf;;AAEA;EACE,WAAW;EACX,gBAAgB;EAChB,YAAY;EACZ,qCAAqC;EACrC,2CAA2C;;EAE3C,aAAa;EACb,uBAAuB;EACvB,mBAAmB;AACrB;;AAEA;EACE,WAAW;EACX,gBAAgB;EAChB,aAAa;;EAEb,yBAAyB;EACzB,qCAAqC;AACvC;;AAEA;EACE,eAAe;EACf,kBAAkB;AACpB;;AAEA;EACE,aAAa;EACb,YAAY;AACd;;AAEA;EACE,OAAO;EACP,kBAAkB;EAClB,yBAAyB;EACzB,kBAAkB;AACpB;;AAEA;EACE,kBAAkB;EAClB,yBAAyB;EACzB,cAAc;EACd,SAAS;EACT,gBAAgB;AAClB;;AAEA;EACE,mBAAmB;AACrB;;AAEA;EACE,aAAa;EACb,mBAAmB;AACrB;;AAEA;EACE,OAAO;AACT;;AAEA;EACE,eAAe;AACjB;;AAEA;EACE,eAAe;AACjB;;AAEA;EACE,aAAa;EACb,aAAa;EACb,qCAAqC;EACrC,kBAAkB;EAClB,aAAa;EACb,YAAY;EACZ,kBAAkB;AACpB;AACA;EACE,mBAAmB;EACnB,eAAe;EACf,SAAS;AACX;;AAEA;EACE,aAAa;AACf;;AAEA;EACE,sBAAsB;AACxB;;AAEA;EACE,aAAa;EACb,mBAAmB;EACnB,SAAS;AACX;;AAEA;EACE,aAAa;EACb,SAAS;EACT,8BAA8B;AAChC;;AAEA;EACE,WAAW;EACX,gBAAgB;AAClB;;AAEA;EACE,WAAW;EACX,YAAY;AACd;;AAEA;EACE,aAAa;EACb,sBAAsB;EACtB,qBAAqB;AACvB;;AAEA;EACE,aAAa;EACb,sBAAsB;EACtB,qBAAqB;AACvB;;AAEA;EACE,aAAa;AACf;AACA;EACE,cAAc;AAChB;;AAEA;EACE,mBAAmB;EACnB,sBAAsB;EACtB,aAAa;EACb,kBAAkB;AACpB;;AAEA;EACE,WAAW;EACX,YAAY;;EAEZ,kBAAkB;AACpB;;AAEA;EACE,WAAW;EACX,mBAAmB;AACrB;;AAEA;EACE,aAAa;EACb,8BAA8B;EAC9B,mBAAmB;AACrB;;AAEA;;EAEE,UAAU;AACZ;;AAEA;EACE,eAAe;AACjB;;AAEA;EACE,mBAAmB;AACrB","sourcesContent":["input[type='number']::-webkit-outer-spin-button,\ninput[type='number']::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n\ninput {\n  outline: none;\n}\n\nbody {\n  width: 98vw;\n  min-height: 90vh;\n  margin: auto;\n  background-color: rgba(0, 0, 0, 0.07);\n  font-family: 'NanumBarunGothic', sans-serif;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#app {\n  width: 25vw;\n  min-width: 414px;\n  padding: 50px;\n\n  background-color: #ffffff;\n  border: 1px solid rgba(0, 0, 0, 0.12);\n}\n\n.header-title {\n  font-size: 34px;\n  text-align: center;\n}\n\n#charge-input-form {\n  display: flex;\n  height: 36px;\n}\n\n#charge-input {\n  flex: 1;\n  margin-right: 20px;\n  border: 1px solid #b4b4b4;\n  border-radius: 4px;\n}\n\nbutton {\n  border-radius: 4px;\n  background-color: #00bcd4;\n  color: #ffffff;\n  border: 0;\n  min-height: 36px;\n}\n\nsection {\n  margin-bottom: 20px;\n}\n\n#lotto-section {\n  display: flex;\n  flex-direction: row;\n}\n\n.lotto-wrapper {\n  flex: 1;\n}\n\n.lotto {\n  font-size: 34px;\n}\n\n.lotto .number {\n  font-size: 16px;\n}\n\n#lotto-container {\n  display: flex;\n  height: 350px;\n  background-color: rgba(0, 0, 0, 0.05);\n  border-radius: 4px;\n  padding: 20px;\n  margin: 10px;\n  overflow-y: scroll;\n}\n#lotto-container[data-visible-state='false'] {\n  flex-direction: row;\n  flex-wrap: wrap;\n  gap: 10px;\n}\n\n#lotto-container[data-visible-state='false'] .number {\n  display: none;\n}\n\n#lotto-container[data-visible-state='true'] {\n  flex-direction: column;\n}\n\n#lotto-container[data-visible-state='true'] .lotto {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n}\n\n.win-number-input-wrapper {\n  display: flex;\n  gap: 10px;\n  justify-content: space-between;\n}\n\n#result-button {\n  width: 100%;\n  margin-top: 10px;\n}\n\n.win-number-input-wrapper input {\n  width: 30px;\n  height: 30px;\n}\n\n.flex-column-align-end {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n}\n\n#align-converter-container {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n}\n\n.hide {\n  display: none;\n}\n.show {\n  display: block;\n}\n\n.modal-container#result-container {\n  /* padding: 20px; */\n  /* min-width: 300px; */\n  height: 400px;\n  overflow-y: scroll;\n}\n\n.modal-container > div {\n  width: 100%;\n  height: 100%;\n\n  text-align: center;\n}\n\n.modal-container > div > table {\n  width: 100%;\n  margin-bottom: 30px;\n}\n\ntable tr {\n  display: flex;\n  justify-content: space-between;\n  margin-bottom: 20px;\n}\n\ntable tr td,\nth {\n  width: 33%;\n}\n\n.modal-cancel-button {\n  cursor: pointer;\n}\n\n#result-contents > * {\n  margin-bottom: 30px;\n}\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "input[type='number']::-webkit-outer-spin-button,\ninput[type='number']::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n\ninput {\n  outline: none;\n}\n\nbody {\n  width: 98vw;\n  min-height: 90vh;\n  margin: auto;\n  background-color: rgba(0, 0, 0, 0.07);\n  font-family: 'NanumBarunGothic', sans-serif;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#app {\n  width: 25vw;\n  min-width: 414px;\n  padding: 50px;\n\n  background-color: #ffffff;\n  border: 1px solid rgba(0, 0, 0, 0.12);\n}\n\n.header-title {\n  font-size: 34px;\n  text-align: center;\n}\n\n#charge-input-form {\n  display: flex;\n  height: 36px;\n}\n\n#charge-input {\n  flex: 1;\n  margin-right: 20px;\n  border: 1px solid #b4b4b4;\n  border-radius: 4px;\n}\n\nbutton {\n  border-radius: 4px;\n  background-color: #00bcd4;\n  color: #ffffff;\n  border: 0;\n  min-height: 36px;\n\n  cursor: pointer;\n}\n\nsection {\n  margin-bottom: 20px;\n}\n\n#lotto-section {\n  display: flex;\n  flex-direction: row;\n}\n\n.lotto-wrapper {\n  flex: 1;\n}\n\n.lotto {\n  font-size: 34px;\n}\n\n.lotto .number {\n  font-size: 16px;\n}\n\n#lotto-container {\n  display: flex;\n  height: 350px;\n  background-color: rgba(0, 0, 0, 0.05);\n  border-radius: 4px;\n  padding: 20px;\n  margin: 10px;\n  overflow-y: scroll;\n}\n#lotto-container[data-visible-state='false'] {\n  flex-direction: row;\n  flex-wrap: wrap;\n  gap: 10px;\n}\n\n#lotto-container[data-visible-state='false'] .number {\n  display: none;\n}\n\n#lotto-container[data-visible-state='true'] {\n  flex-direction: column;\n}\n\n#lotto-container[data-visible-state='true'] .lotto {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n}\n\n.win-number-input-wrapper {\n  display: flex;\n  gap: 10px;\n  justify-content: space-between;\n}\n\n#result-button {\n  width: 100%;\n  margin-top: 10px;\n}\n\n.win-number-input-wrapper input {\n  width: 30px;\n  height: 30px;\n}\n\n.flex-column-align-end {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n}\n\n#align-converter-container {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n\n  position: relative;\n}\nlabel[for='align-converter']:hover::before {\n  content: '';\n\n  background-size: cover;\n  width: 200px;\n  height: 200px;\n\n  position: absolute;\n  right: -200px;\n}\n\n#align-converter-container[data-visible-state='false']\n  > label[for='align-converter']:hover::before {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\n}\n\n#align-converter-container[data-visible-state='true'] > label[for='align-converter']:hover::before {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_1___ + ");\n}\n\n.hide {\n  display: none;\n}\n.show {\n  display: block;\n}\n\n.modal-container#result-container {\n  /* padding: 20px; */\n  /* min-width: 300px; */\n  height: 400px;\n  overflow-y: scroll;\n}\n\n.modal-container > div {\n  width: 100%;\n  height: 100%;\n\n  text-align: center;\n}\n\n.modal-container > div > table {\n  width: 100%;\n  margin-bottom: 30px;\n}\n\ntable tr {\n  display: flex;\n  justify-content: space-between;\n  margin-bottom: 20px;\n}\n\ntable tr td,\nth {\n  width: 33%;\n}\n\n.modal-cancel-button {\n  cursor: pointer;\n}\n\n#result-contents > * {\n  margin-bottom: 30px;\n}\n", "",{"version":3,"sources":["webpack://./src/css/index.css"],"names":[],"mappings":"AAAA;;EAEE,wBAAwB;EACxB,SAAS;AACX;;AAEA;EACE,aAAa;AACf;;AAEA;EACE,WAAW;EACX,gBAAgB;EAChB,YAAY;EACZ,qCAAqC;EACrC,2CAA2C;;EAE3C,aAAa;EACb,uBAAuB;EACvB,mBAAmB;AACrB;;AAEA;EACE,WAAW;EACX,gBAAgB;EAChB,aAAa;;EAEb,yBAAyB;EACzB,qCAAqC;AACvC;;AAEA;EACE,eAAe;EACf,kBAAkB;AACpB;;AAEA;EACE,aAAa;EACb,YAAY;AACd;;AAEA;EACE,OAAO;EACP,kBAAkB;EAClB,yBAAyB;EACzB,kBAAkB;AACpB;;AAEA;EACE,kBAAkB;EAClB,yBAAyB;EACzB,cAAc;EACd,SAAS;EACT,gBAAgB;;EAEhB,eAAe;AACjB;;AAEA;EACE,mBAAmB;AACrB;;AAEA;EACE,aAAa;EACb,mBAAmB;AACrB;;AAEA;EACE,OAAO;AACT;;AAEA;EACE,eAAe;AACjB;;AAEA;EACE,eAAe;AACjB;;AAEA;EACE,aAAa;EACb,aAAa;EACb,qCAAqC;EACrC,kBAAkB;EAClB,aAAa;EACb,YAAY;EACZ,kBAAkB;AACpB;AACA;EACE,mBAAmB;EACnB,eAAe;EACf,SAAS;AACX;;AAEA;EACE,aAAa;AACf;;AAEA;EACE,sBAAsB;AACxB;;AAEA;EACE,aAAa;EACb,mBAAmB;EACnB,SAAS;AACX;;AAEA;EACE,aAAa;EACb,SAAS;EACT,8BAA8B;AAChC;;AAEA;EACE,WAAW;EACX,gBAAgB;AAClB;;AAEA;EACE,WAAW;EACX,YAAY;AACd;;AAEA;EACE,aAAa;EACb,sBAAsB;EACtB,qBAAqB;AACvB;;AAEA;EACE,aAAa;EACb,sBAAsB;EACtB,qBAAqB;;EAErB,kBAAkB;AACpB;AACA;EACE,WAAW;;EAEX,sBAAsB;EACtB,YAAY;EACZ,aAAa;;EAEb,kBAAkB;EAClB,aAAa;AACf;;AAEA;;EAEE,yDAA0F;AAC5F;;AAEA;EACE,yDAAwF;AAC1F;;AAEA;EACE,aAAa;AACf;AACA;EACE,cAAc;AAChB;;AAEA;EACE,mBAAmB;EACnB,sBAAsB;EACtB,aAAa;EACb,kBAAkB;AACpB;;AAEA;EACE,WAAW;EACX,YAAY;;EAEZ,kBAAkB;AACpB;;AAEA;EACE,WAAW;EACX,mBAAmB;AACrB;;AAEA;EACE,aAAa;EACb,8BAA8B;EAC9B,mBAAmB;AACrB;;AAEA;;EAEE,UAAU;AACZ;;AAEA;EACE,eAAe;AACjB;;AAEA;EACE,mBAAmB;AACrB","sourcesContent":["input[type='number']::-webkit-outer-spin-button,\ninput[type='number']::-webkit-inner-spin-button {\n  -webkit-appearance: none;\n  margin: 0;\n}\n\ninput {\n  outline: none;\n}\n\nbody {\n  width: 98vw;\n  min-height: 90vh;\n  margin: auto;\n  background-color: rgba(0, 0, 0, 0.07);\n  font-family: 'NanumBarunGothic', sans-serif;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#app {\n  width: 25vw;\n  min-width: 414px;\n  padding: 50px;\n\n  background-color: #ffffff;\n  border: 1px solid rgba(0, 0, 0, 0.12);\n}\n\n.header-title {\n  font-size: 34px;\n  text-align: center;\n}\n\n#charge-input-form {\n  display: flex;\n  height: 36px;\n}\n\n#charge-input {\n  flex: 1;\n  margin-right: 20px;\n  border: 1px solid #b4b4b4;\n  border-radius: 4px;\n}\n\nbutton {\n  border-radius: 4px;\n  background-color: #00bcd4;\n  color: #ffffff;\n  border: 0;\n  min-height: 36px;\n\n  cursor: pointer;\n}\n\nsection {\n  margin-bottom: 20px;\n}\n\n#lotto-section {\n  display: flex;\n  flex-direction: row;\n}\n\n.lotto-wrapper {\n  flex: 1;\n}\n\n.lotto {\n  font-size: 34px;\n}\n\n.lotto .number {\n  font-size: 16px;\n}\n\n#lotto-container {\n  display: flex;\n  height: 350px;\n  background-color: rgba(0, 0, 0, 0.05);\n  border-radius: 4px;\n  padding: 20px;\n  margin: 10px;\n  overflow-y: scroll;\n}\n#lotto-container[data-visible-state='false'] {\n  flex-direction: row;\n  flex-wrap: wrap;\n  gap: 10px;\n}\n\n#lotto-container[data-visible-state='false'] .number {\n  display: none;\n}\n\n#lotto-container[data-visible-state='true'] {\n  flex-direction: column;\n}\n\n#lotto-container[data-visible-state='true'] .lotto {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n}\n\n.win-number-input-wrapper {\n  display: flex;\n  gap: 10px;\n  justify-content: space-between;\n}\n\n#result-button {\n  width: 100%;\n  margin-top: 10px;\n}\n\n.win-number-input-wrapper input {\n  width: 30px;\n  height: 30px;\n}\n\n.flex-column-align-end {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n}\n\n#align-converter-container {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n\n  position: relative;\n}\nlabel[for='align-converter']:hover::before {\n  content: '';\n\n  background-size: cover;\n  width: 200px;\n  height: 200px;\n\n  position: absolute;\n  right: -200px;\n}\n\n#align-converter-container[data-visible-state='false']\n  > label[for='align-converter']:hover::before {\n  background-image: url('/Users/jangjunhyeog/Wowahan/javascript-lotto/images/미리보기-번호보기.png');\n}\n\n#align-converter-container[data-visible-state='true'] > label[for='align-converter']:hover::before {\n  background-image: url('/Users/jangjunhyeog/Wowahan/javascript-lotto/images/미리보기-기본.png');\n}\n\n.hide {\n  display: none;\n}\n.show {\n  display: block;\n}\n\n.modal-container#result-container {\n  /* padding: 20px; */\n  /* min-width: 300px; */\n  height: 400px;\n  overflow-y: scroll;\n}\n\n.modal-container > div {\n  width: 100%;\n  height: 100%;\n\n  text-align: center;\n}\n\n.modal-container > div > table {\n  width: 100%;\n  margin-bottom: 30px;\n}\n\ntable tr {\n  display: flex;\n  justify-content: space-between;\n  margin-bottom: 20px;\n}\n\ntable tr td,\nth {\n  width: 33%;\n}\n\n.modal-cancel-button {\n  cursor: pointer;\n}\n\n#result-contents > * {\n  margin-bottom: 30px;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1432,6 +1501,44 @@ module.exports = function (cssWithMappingToString) {
   };
 
   return list;
+};
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/runtime/getUrl.js":
+/*!********************************************************!*\
+  !*** ./node_modules/css-loader/dist/runtime/getUrl.js ***!
+  \********************************************************/
+/***/ ((module) => {
+
+
+
+module.exports = function (url, options) {
+  if (!options) {
+    options = {};
+  }
+
+  if (!url) {
+    return url;
+  }
+
+  url = String(url.__esModule ? url.default : url); // If url is already wrapped in quotes, remove them
+
+  if (/^['"].*['"]$/.test(url)) {
+    url = url.slice(1, -1);
+  }
+
+  if (options.hash) {
+    url += options.hash;
+  } // Should url be wrapped?
+  // See https://drafts.csswg.org/css-values-3/#urls
+
+
+  if (/["'() \t\n]|(%20)/.test(url) || options.needQuotes) {
+    return "\"".concat(url.replace(/"/g, '\\"').replace(/\n/g, "\\n"), "\"");
+  }
+
+  return url;
 };
 
 /***/ }),
@@ -1987,6 +2094,26 @@ function styleTagTransform(css, styleElement) {
 
 module.exports = styleTagTransform;
 
+/***/ }),
+
+/***/ "./images/미리보기-기본.png":
+/*!****************************!*\
+  !*** ./images/미리보기-기본.png ***!
+  \****************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports = __webpack_require__.p + "e154199eaff6428eb57a.png";
+
+/***/ }),
+
+/***/ "./images/미리보기-번호보기.png":
+/*!******************************!*\
+  !*** ./images/미리보기-번호보기.png ***!
+  \******************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports = __webpack_require__.p + "27d176351b7e78eef2e3.png";
+
 /***/ })
 
 /******/ 	});
@@ -2015,6 +2142,9 @@ module.exports = styleTagTransform;
 /******/ 		return module.exports;
 /******/ 	}
 /******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
+/******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat get default export */
 /******/ 	(() => {
@@ -2040,6 +2170,18 @@ module.exports = styleTagTransform;
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
@@ -2054,6 +2196,52 @@ module.exports = styleTagTransform;
 /******/ 			}
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/publicPath */
+/******/ 	(() => {
+/******/ 		var scriptUrl;
+/******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + "";
+/******/ 		var document = __webpack_require__.g.document;
+/******/ 		if (!scriptUrl && document) {
+/******/ 			if (document.currentScript)
+/******/ 				scriptUrl = document.currentScript.src
+/******/ 			if (!scriptUrl) {
+/******/ 				var scripts = document.getElementsByTagName("script");
+/******/ 				if(scripts.length) scriptUrl = scripts[scripts.length - 1].src
+/******/ 			}
+/******/ 		}
+/******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
+/******/ 		// or pass an empty string ("") and set the __webpack_public_path__ variable from your code to use your own logic.
+/******/ 		if (!scriptUrl) throw new Error("Automatic publicPath is not supported in this browser");
+/******/ 		scriptUrl = scriptUrl.replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
+/******/ 		__webpack_require__.p = scriptUrl;
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/jsonp chunk loading */
+/******/ 	(() => {
+/******/ 		__webpack_require__.b = document.baseURI || self.location.href;
+/******/ 		
+/******/ 		// object to store loaded and loading chunks
+/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
+/******/ 		var installedChunks = {
+/******/ 			"main": 0
+/******/ 		};
+/******/ 		
+/******/ 		// no chunk on demand loading
+/******/ 		
+/******/ 		// no prefetching
+/******/ 		
+/******/ 		// no preloaded
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 		
+/******/ 		// no on chunks loaded
+/******/ 		
+/******/ 		// no jsonp function
 /******/ 	})();
 /******/ 	
 /************************************************************************/
