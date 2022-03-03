@@ -153,13 +153,16 @@ var LottoGameManager = /*#__PURE__*/function () {
       var inputElement = e.target;
       var value = inputElement.value,
           maxLength = inputElement.maxLength;
+      /** 인풋 글자 수 제한. */
 
       if (value.length > maxLength) {
-        var _inputElement$nextEle;
-
-        /** 인풋 글자 수 제한. */
         inputElement.value = value.slice(0, maxLength);
-        /** 다음 자식으로 포커스 넘어감 */
+      }
+      /** 다음 자식으로 포커스 넘어감 */
+
+
+      if (value.length === maxLength) {
+        var _inputElement$nextEle;
 
         (_inputElement$nextEle = inputElement.nextElementSibling) === null || _inputElement$nextEle === void 0 ? void 0 : _inputElement$nextEle.focus();
       }
@@ -330,13 +333,8 @@ var NUMBER = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "RANK_KEYS": () => (/* binding */ RANK_KEYS),
-/* harmony export */   "RANK": () => (/* binding */ RANK),
-/* harmony export */   "RANK_PRICE": () => (/* binding */ RANK_PRICE)
+/* harmony export */   "RANK_PRIZE": () => (/* binding */ RANK_PRIZE)
 /* harmony export */ });
-var _RANK_PRICE;
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 var RANK_KEYS = {
   FIRST: '1등',
   SECOND: '2등',
@@ -345,18 +343,14 @@ var RANK_KEYS = {
   FIFTH: '5등',
   UNRANK: '꽝'
 };
-var RANK = {
-  '6true': RANK_KEYS.FIRST,
-  '6false': RANK_KEYS.FIRST,
-  '5ture': RANK_KEYS.SECOND,
-  '5false': RANK_KEYS.THIRD,
-  '4true': RANK_KEYS.FORTH,
-  '4false': RANK_KEYS.FORTH,
-  '3true': RANK_KEYS.FIFTH,
-  '3false': RANK_KEYS.FIFTH,
-  UNRANK: RANK_KEYS.UNRANK
+var RANK_PRIZE = {
+  FIRST: 2000000000,
+  SECOND: 30000000,
+  THIRD: 1500000,
+  FORTH: 50000,
+  FIFTH: 5000,
+  UNRANK: 0
 };
-var RANK_PRICE = (_RANK_PRICE = {}, _defineProperty(_RANK_PRICE, "".concat(RANK_KEYS.UNRANK), 0), _defineProperty(_RANK_PRICE, "".concat(RANK_KEYS.FIFTH), 5000), _defineProperty(_RANK_PRICE, "".concat(RANK_KEYS.FORTH), 50000), _defineProperty(_RANK_PRICE, "".concat(RANK_KEYS.THIRD), 1500000), _defineProperty(_RANK_PRICE, "".concat(RANK_KEYS.SECOND), 30000000), _defineProperty(_RANK_PRICE, "".concat(RANK_KEYS.FIRST), 2000000000), _RANK_PRICE);
 
 /***/ }),
 
@@ -404,8 +398,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _constants_number__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/number */ "./src/js/constants/number.js");
-/* harmony import */ var _constants_rank__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/rank */ "./src/js/constants/rank.js");
-/* harmony import */ var _utils_gameUtil__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/gameUtil */ "./src/js/utils/gameUtil.js");
+/* harmony import */ var _utils_gameUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/gameUtil */ "./src/js/utils/gameUtil.js");
+/* harmony import */ var _utils_rank__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/rank */ "./src/js/utils/rank.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -472,8 +466,6 @@ var Lotto = /*#__PURE__*/function () {
   }, {
     key: "computeWinResult",
     value: function computeWinResult(winningNumbers, bonusNumber) {
-      var _RANK$;
-
       var _classPrivateFieldGet2 = _classPrivateFieldGet(this, _lottoNumbers).filter(function (number) {
         return winningNumbers.includes(number);
       }),
@@ -481,7 +473,7 @@ var Lotto = /*#__PURE__*/function () {
 
       var isMatchBonus = _classPrivateFieldGet(this, _lottoNumbers).includes(bonusNumber);
 
-      return (_RANK$ = _constants_rank__WEBPACK_IMPORTED_MODULE_1__.RANK["".concat(numberMatchCount).concat(isMatchBonus)]) !== null && _RANK$ !== void 0 ? _RANK$ : _constants_rank__WEBPACK_IMPORTED_MODULE_1__.RANK.UNRANK;
+      return (0,_utils_rank__WEBPACK_IMPORTED_MODULE_2__.computeRank)(numberMatchCount, isMatchBonus);
     }
   }]);
 
@@ -489,7 +481,7 @@ var Lotto = /*#__PURE__*/function () {
 }();
 
 function _createLottoNumbers2() {
-  var lottoNumbers = (0,_utils_gameUtil__WEBPACK_IMPORTED_MODULE_2__.shuffle)(_toConsumableArray(new Array(_constants_number__WEBPACK_IMPORTED_MODULE_0__.NUMBER.LOTTO_MAX_NUMBER)).map(function (_, idx) {
+  var lottoNumbers = (0,_utils_gameUtil__WEBPACK_IMPORTED_MODULE_1__.shuffle)(_toConsumableArray(new Array(_constants_number__WEBPACK_IMPORTED_MODULE_0__.NUMBER.LOTTO_MAX_NUMBER)).map(function (_, idx) {
     return idx + 1;
   }));
 
@@ -513,8 +505,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _constants_errorMessage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/errorMessage */ "./src/js/constants/errorMessage.js");
 /* harmony import */ var _constants_number__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/number */ "./src/js/constants/number.js");
 /* harmony import */ var _constants_rank__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/rank */ "./src/js/constants/rank.js");
-/* harmony import */ var _utils_validator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/validator */ "./src/js/utils/validator.js");
-/* harmony import */ var _Lotto__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Lotto */ "./src/js/domains/Lotto.js");
+/* harmony import */ var _utils_rank__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/rank */ "./src/js/utils/rank.js");
+/* harmony import */ var _utils_validator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/validator */ "./src/js/utils/validator.js");
+/* harmony import */ var _Lotto__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Lotto */ "./src/js/domains/Lotto.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
@@ -563,6 +556,7 @@ function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { 
 
 
 
+
 var _lottoList = /*#__PURE__*/new WeakMap();
 
 var _computeStatistics = /*#__PURE__*/new WeakSet();
@@ -599,7 +593,7 @@ var LottoList = /*#__PURE__*/function () {
       var availableLottoAmount = this.exchangeChargeToLottoAmount(chargeInput);
 
       var lottoList = _toConsumableArray(new Array(availableLottoAmount)).map(function () {
-        return new _Lotto__WEBPACK_IMPORTED_MODULE_4__["default"]();
+        return new _Lotto__WEBPACK_IMPORTED_MODULE_5__["default"]();
       });
 
       _classPrivateFieldSet(this, _lottoList, lottoList);
@@ -607,7 +601,7 @@ var LottoList = /*#__PURE__*/function () {
   }, {
     key: "exchangeChargeToLottoAmount",
     value: function exchangeChargeToLottoAmount(charge) {
-      if ((0,_utils_validator__WEBPACK_IMPORTED_MODULE_3__.isValidCharge)(charge)) {
+      if ((0,_utils_validator__WEBPACK_IMPORTED_MODULE_4__.isValidCharge)(charge)) {
         return Math.floor(charge / _constants_number__WEBPACK_IMPORTED_MODULE_1__.NUMBER.LOTTO_PRICE);
       }
 
@@ -616,7 +610,7 @@ var LottoList = /*#__PURE__*/function () {
   }, {
     key: "computeStatisticsAndProfitRatio",
     value: function computeStatisticsAndProfitRatio(winningNumbers, bonusNumber) {
-      if ((0,_utils_validator__WEBPACK_IMPORTED_MODULE_3__.isValidWinningNumber)([].concat(_toConsumableArray(winningNumbers), [bonusNumber]))) {
+      if ((0,_utils_validator__WEBPACK_IMPORTED_MODULE_4__.isValidWinningNumber)([].concat(_toConsumableArray(winningNumbers), [bonusNumber]))) {
         var statistics = _classPrivateMethodGet(this, _computeStatistics, _computeStatistics2).call(this, winningNumbers, bonusNumber);
 
         var profitRatio = _classPrivateMethodGet(this, _computeProfitRatio, _computeProfitRatio2).call(this, statistics);
@@ -648,7 +642,7 @@ function _computeProfitRatio2(statistics) {
   var lottoPurchaseAmount = _classPrivateFieldGet(this, _lottoList).length * _constants_number__WEBPACK_IMPORTED_MODULE_1__.NUMBER.LOTTO_PRICE;
   var profitAmount = Object.keys(statistics).reduce(function (prev, currentKey) {
     var count = statistics[currentKey];
-    var price = _constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_PRICE[currentKey];
+    var price = (0,_utils_rank__WEBPACK_IMPORTED_MODULE_3__.computeRankPrize)(currentKey);
     return prev + count * price;
   }, 0);
   return profitAmount / lottoPurchaseAmount * 100;
@@ -863,6 +857,68 @@ function shuffle(array) {
     return Math.random() - 0.5;
   });
   return _toConsumableArray(copy);
+}
+
+/***/ }),
+
+/***/ "./src/js/utils/rank.js":
+/*!******************************!*\
+  !*** ./src/js/utils/rank.js ***!
+  \******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "computeRankPrize": () => (/* binding */ computeRankPrize),
+/* harmony export */   "computeRank": () => (/* binding */ computeRank)
+/* harmony export */ });
+/* harmony import */ var _constants_rank__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/rank */ "./src/js/constants/rank.js");
+
+function computeRankPrize(rank) {
+  if (rank === _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.FIRST) {
+    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_PRIZE.FIRST;
+  }
+
+  if (rank === _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.SECOND) {
+    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_PRIZE.SECOND;
+  }
+
+  if (rank === _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.THIRD) {
+    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_PRIZE.THIRD;
+  }
+
+  if (rank === _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.FORTH) {
+    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_PRIZE.FORTH;
+  }
+
+  if (rank === _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.FIFTH) {
+    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_PRIZE.FIFTH;
+  }
+
+  return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_PRIZE.UNRANK;
+}
+function computeRank(numberMatchCount, isMatchBonus) {
+  if (numberMatchCount === 6) {
+    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.FIRST;
+  }
+
+  if (numberMatchCount === 5 && isMatchBonus) {
+    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.SECOND;
+  }
+
+  if (numberMatchCount === 5 && !isMatchBonus) {
+    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.THIRD;
+  }
+
+  if (numberMatchCount === 4) {
+    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.FORTH;
+  }
+
+  if (numberMatchCount === 3) {
+    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.FIFTH;
+  }
+
+  return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.UNRANK;
 }
 
 /***/ }),
@@ -1167,10 +1223,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _constants_events__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/events */ "./src/js/constants/events.js");
 /* harmony import */ var _constants_selector__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/selector */ "./src/js/constants/selector.js");
-/* harmony import */ var _constants_rank__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/rank */ "./src/js/constants/rank.js");
-/* harmony import */ var _utils_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/dom */ "./src/js/utils/dom.js");
-/* harmony import */ var _utils_util__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/util */ "./src/js/utils/util.js");
-/* harmony import */ var _utils_event__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/event */ "./src/js/utils/event.js");
+/* harmony import */ var _utils_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/dom */ "./src/js/utils/dom.js");
+/* harmony import */ var _utils_util__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/util */ "./src/js/utils/util.js");
+/* harmony import */ var _utils_event__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/event */ "./src/js/utils/event.js");
+/* harmony import */ var _utils_rank__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/rank */ "./src/js/utils/rank.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -1334,7 +1390,7 @@ var LottoResultView = /*#__PURE__*/function () {
       var statistics = _ref2.statistics,
           profitRatio = _ref2.profitRatio;
       _classPrivateFieldGet(this, _statisticsTableBody).innerHTML = Object.keys(statistics).reduce(function (prev, currentKey) {
-        var price = _constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_PRICE[currentKey];
+        var price = (0,_utils_rank__WEBPACK_IMPORTED_MODULE_5__.computeRankPrize)(currentKey);
         var count = statistics[currentKey];
         return prev + _classPrivateMethodGet(_this, _generateStatisticsTableData, _generateStatisticsTableData2).call(_this, currentKey, price, count);
       }, '');
@@ -1360,34 +1416,34 @@ function _initializeTemplate2() {
 }
 
 function _initializeDOM2() {
-  _classPrivateFieldSet(this, _winNumberInputSection, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.WIN_NUMBER_INPUT_SECTION));
+  _classPrivateFieldSet(this, _winNumberInputSection, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.WIN_NUMBER_INPUT_SECTION));
 
-  _classPrivateFieldSet(this, _winNumberInputForm, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.WIN_NUMBER_INPUT_FORM));
+  _classPrivateFieldSet(this, _winNumberInputForm, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.WIN_NUMBER_INPUT_FORM));
 
-  _classPrivateFieldSet(this, _winStatistics, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.WIN_STATISTICS));
+  _classPrivateFieldSet(this, _winStatistics, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.WIN_STATISTICS));
 
-  _classPrivateFieldSet(this, _statisticsTableBody, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.STATISTICS_TABLE_BODY));
+  _classPrivateFieldSet(this, _statisticsTableBody, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.STATISTICS_TABLE_BODY));
 
-  _classPrivateFieldSet(this, _profitRatioText, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.PROFIT_RATIO_TEXT));
+  _classPrivateFieldSet(this, _profitRatioText, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.PROFIT_RATIO_TEXT));
 
-  _classPrivateFieldSet(this, _restartButton, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.RESTART_BUTTON));
+  _classPrivateFieldSet(this, _restartButton, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.RESTART_BUTTON));
 }
 
 function _bindEventHandler2() {
   _classPrivateFieldSet(this, _onSubmitResult, function (e) {
-    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.SUBMIT_RESULT, e);
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_4__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.SUBMIT_RESULT, e);
   });
 
   _classPrivateFieldSet(this, _onClickRestartButton, function (e) {
-    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_RESTART_BUTTON, e);
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_4__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_RESTART_BUTTON, e);
   });
 
   _classPrivateFieldSet(this, _onClickModal, function (e) {
-    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_MODAL, e);
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_4__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_MODAL, e);
   });
 
   _classPrivateFieldSet(this, _onInputOverMaxLength, function (e) {
-    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.INPUT_OVER_MAX_LENGTH, e);
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_4__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.INPUT_OVER_MAX_LENGTH, e);
   });
 
   _classPrivateFieldGet(this, _winNumberInputForm).addEventListener('submit', _classPrivateFieldGet(this, _onSubmitResult));
@@ -1400,7 +1456,7 @@ function _bindEventHandler2() {
 }
 
 function _generateStatisticsTableData2(currentKey, price, count) {
-  return "<tr><td>".concat(currentKey, "</td><td>").concat((0,_utils_util__WEBPACK_IMPORTED_MODULE_4__.changeCurrencyFormat)(price), "</td><td>").concat(count, "</td> </tr>");
+  return "<tr><td>".concat(currentKey, "</td><td>").concat((0,_utils_util__WEBPACK_IMPORTED_MODULE_3__.changeCurrencyFormat)(price), "</td><td>").concat(count, "</td> </tr>");
 }
 
 function _generateProfitRatioText2(profitRatio) {
