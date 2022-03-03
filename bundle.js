@@ -153,13 +153,9 @@ var LottoGameManager = /*#__PURE__*/function () {
   _createClass(LottoGameManager, [{
     key: "start",
     value: function start() {
-      var _generateEventFactory = (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.generateEventFactory)(),
-          bindEvent = _generateEventFactory.bindEvent,
-          emitEvent = _generateEventFactory.emitEvent;
+      _classPrivateMethodGet(this, _bindEventHandler, _bindEventHandler2).call(this);
 
-      _classPrivateMethodGet(this, _bindEventHandler, _bindEventHandler2).call(this, bindEvent);
-
-      _classPrivateMethodGet(this, _initializeManagers, _initializeManagers2).call(this, emitEvent);
+      _classPrivateMethodGet(this, _initializeManagers, _initializeManagers2).call(this);
     }
   }, {
     key: "triggerChargeInputAction",
@@ -211,12 +207,12 @@ function _initializeManagers2(emitEvent) {
   _classPrivateFieldSet(this, _lottoViewManager, new _views__WEBPACK_IMPORTED_MODULE_1__["default"](emitEvent));
 }
 
-function _bindEventHandler2(bindEvent) {
-  bindEvent(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.SUBMIT_CHARGE, this.onSubmitCharge);
-  bindEvent(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.CHANGE_ALIGN_STATE, this.onChangeAlignState);
-  bindEvent(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.SUBMIT_RESULT, this.onSubmitResult);
-  bindEvent(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.CLICK_RESTART_BUTTON, this.onClickRestartButton);
-  bindEvent(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.CLICK_MODAL, this.onClickModal);
+function _bindEventHandler2() {
+  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.bindEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.SUBMIT_CHARGE, this.onSubmitCharge);
+  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.bindEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.CHANGE_ALIGN_STATE, this.onChangeAlignState);
+  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.bindEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.SUBMIT_RESULT, this.onSubmitResult);
+  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.bindEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.CLICK_RESTART_BUTTON, this.onClickRestartButton);
+  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.bindEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.CLICK_MODAL, this.onClickModal);
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (LottoGameManager);
@@ -425,10 +421,10 @@ var Lotto = /*#__PURE__*/function () {
   }, {
     key: "createLottoNumbers",
     value: function createLottoNumbers() {
-      var getLottoNumber = (0,_utils_gameUtil__WEBPACK_IMPORTED_MODULE_2__.lottoNumberClosure)();
-      return _toConsumableArray(new Array(_constants_number__WEBPACK_IMPORTED_MODULE_0__.NUMBER.LOTTO_NUMBER_LENGTH)).map(function () {
-        return getLottoNumber();
-      });
+      var lottoNumbers = (0,_utils_gameUtil__WEBPACK_IMPORTED_MODULE_2__.shuffle)(_toConsumableArray(new Array(_constants_number__WEBPACK_IMPORTED_MODULE_0__.NUMBER.LOTTO_MAX_NUMBER)).map(function (_, idx) {
+        return idx + 1;
+      }));
+      return lottoNumbers.slice(0, _constants_number__WEBPACK_IMPORTED_MODULE_0__.NUMBER.LOTTO_NUMBER_LENGTH);
     }
   }, {
     key: "computeWinResult",
@@ -724,9 +720,11 @@ var isCancelModal = function isCancelModal(className) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "generateEventFactory": () => (/* binding */ generateEventFactory)
+/* harmony export */   "bindEvent": () => (/* binding */ bindEvent),
+/* harmony export */   "emitEvent": () => (/* binding */ emitEvent)
 /* harmony export */ });
-var generateEventFactory = function generateEventFactory() {
+/** singleton */
+var _ref = function () {
   var eventListeners = {};
   return {
     bindEvent: function bindEvent(eventName, eventListener) {
@@ -737,7 +735,11 @@ var generateEventFactory = function generateEventFactory() {
       eventListener(e);
     }
   };
-};
+}(),
+    bindEvent = _ref.bindEvent,
+    emitEvent = _ref.emitEvent;
+
+
 
 /***/ }),
 
@@ -749,10 +751,8 @@ var generateEventFactory = function generateEventFactory() {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "lottoNumberClosure": () => (/* binding */ lottoNumberClosure),
 /* harmony export */   "shuffle": () => (/* binding */ shuffle)
 /* harmony export */ });
-/* harmony import */ var _constants_number__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/number */ "./src/js/constants/number.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -765,15 +765,6 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-
-function lottoNumberClosure() {
-  var pickNumbers = shuffle(_toConsumableArray(new Array(_constants_number__WEBPACK_IMPORTED_MODULE_0__.NUMBER.LOTTO_MAX_NUMBER)).map(function (_, idx) {
-    return idx + 1;
-  }));
-  return function () {
-    return pickNumbers.pop();
-  };
-}
 function shuffle(array) {
   var copy = _toConsumableArray(array);
 
@@ -866,6 +857,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _constants_events__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/events */ "./src/js/constants/events.js");
 /* harmony import */ var _constants_selector__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/selector */ "./src/js/constants/selector.js");
 /* harmony import */ var _utils_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/dom */ "./src/js/utils/dom.js");
+/* harmony import */ var _utils_event__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/event */ "./src/js/utils/event.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -890,6 +882,7 @@ function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(
 
 
 
+
 var _initializeTemplate = /*#__PURE__*/new WeakSet();
 
 var _initializeDOM = /*#__PURE__*/new WeakSet();
@@ -902,8 +895,7 @@ var _basicTemplate = /*#__PURE__*/new WeakMap();
 
 var LottoContainerView = /*#__PURE__*/function () {
   function LottoContainerView(_ref) {
-    var $app = _ref.$app,
-        _emitEvent = _ref.emitEvent;
+    var $app = _ref.$app;
 
     _classCallCheck(this, LottoContainerView);
 
@@ -917,7 +909,7 @@ var LottoContainerView = /*#__PURE__*/function () {
 
     _classPrivateFieldInitSpec(this, _basicTemplate, {
       writable: true,
-      value: "\n  <h1 class=\"header-title\">\uD83C\uDFB1 \uD589\uC6B4\uC758 \uB85C\uB610</h1>\n  <section id=\"charge-input-section\" aria-labelledby=\"charge-input-section-title\">\n    <h1 id=\"charge-input-section-title\" hidden>\uAE08\uC561\uC744 \uC785\uB825\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <p>\uAD6C\uC785\uD560 \uAE08\uC561\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694</p>\n    <form id=\"charge-input-form\">\n      <input id=\"charge-input\" type=\"number\" placeholder=\"\uAE08\uC561\" min=\"1000\" max=\"100000\"/>\n      <button id=\"charge-button\">\uAD6C\uC785</button>\n    </form>\n  </section>\n\n  <section id=\"lotto-section\" aria-labelledby=\"lotto-section-title\">\n    <h1 id=\"lotto-section-title\" hidden>\uAD6C\uB9E4\uD55C \uB85C\uB610\uB97C \uD655\uC778\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <div class=\"lotto-wrapper\">\n      <span id=\"purchased-message\"></span>\n      <div id=\"lotto-container\" data-visible-state=\"false\">\uB85C\uB610\uB97C \uAD6C\uB9E4\uD574\uC8FC\uC138\uC694 \uD83D\uDE33</div>\n    </div>\n    <div id=\"align-converter-container\" class=\"flex-column-align-end\" data-visible-state=\"false\">\n      <label for=\"align-converter\" class=\"flex-column-align-end\">\n        <span>\uBC88\uD638 \uBCF4\uAE30</span>\n        <input id=\"align-converter\" type=\"checkbox\" class=\"converter\" />\n        <span class=\"checkmark\">\n          <span class=\"circle\"></span>\n        </span>\n      </label>\n    </div>\n  </section>"
+      value: "\n  <h1 class=\"header-title\">\uD83C\uDFB1 \uD589\uC6B4\uC758 \uB85C\uB610</h1>\n  <section id=\"charge-input-section\" aria-labelledby=\"charge-input-section-title\">\n    <h1 id=\"charge-input-section-title\" hidden>\uAE08\uC561\uC744 \uC785\uB825\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <p>\uAD6C\uC785\uD560 \uAE08\uC561\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694. <b>(\uC785\uB825 \uAC00\uB2A5 \uCD5C\uB300 \uAE08\uC561\uC740 99999\uC6D0\uC785\uB2C8\uB2E4.)</b></p>\n    <form id=\"charge-input-form\">\n      <input id=\"charge-input\" type=\"number\" placeholder=\"\uAE08\uC561\" min=\"1000\" max=\"100000\"/>\n      <button id=\"charge-button\">\uAD6C\uC785</button>\n    </form>\n  </section>\n\n  <section id=\"lotto-section\" aria-labelledby=\"lotto-section-title\">\n    <h1 id=\"lotto-section-title\" hidden>\uAD6C\uB9E4\uD55C \uB85C\uB610\uB97C \uD655\uC778\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <div class=\"lotto-wrapper\">\n      <span id=\"purchased-message\"></span>\n      <div id=\"lotto-container\" data-visible-state=\"false\">\uB85C\uB610\uB97C \uAD6C\uB9E4\uD574\uC8FC\uC138\uC694 \uD83D\uDE33</div>\n    </div>\n    <div id=\"align-converter-container\" class=\"flex-column-align-end\" data-visible-state=\"false\">\n      <label for=\"align-converter\" class=\"flex-column-align-end\">\n        <span>\uBC88\uD638 \uBCF4\uAE30</span>\n        <input id=\"align-converter\" type=\"checkbox\" class=\"converter\" />\n        <span class=\"checkmark\">\n          <span class=\"circle\"></span>\n        </span>\n      </label>\n    </div>\n  </section>"
     });
 
     this.$app = $app;
@@ -926,7 +918,7 @@ var LottoContainerView = /*#__PURE__*/function () {
 
     _classPrivateMethodGet(this, _initializeDOM, _initializeDOM2).call(this);
 
-    _classPrivateMethodGet(this, _bindEventHandler, _bindEventHandler2).call(this, _emitEvent);
+    _classPrivateMethodGet(this, _bindEventHandler, _bindEventHandler2).call(this);
   }
 
   _createClass(LottoContainerView, [{
@@ -972,12 +964,12 @@ function _initializeDOM2() {
   this.$alignConverterContainer = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.ALIGN_CONVERTER_CONTAINER);
 }
 
-function _bindEventHandler2(emitEvent) {
+function _bindEventHandler2() {
   this.$chargeForm.addEventListener('submit', function (e) {
-    return emitEvent(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.SUBMIT_CHARGE, e);
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_3__.emitEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.SUBMIT_CHARGE, e);
   });
   this.$alignConverter.addEventListener('change', function (e) {
-    return emitEvent(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CHANGE_ALIGN_STATE, e);
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_3__.emitEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CHANGE_ALIGN_STATE, e);
   });
 }
 
@@ -1005,6 +997,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _constants_rank__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/rank */ "./src/js/constants/rank.js");
 /* harmony import */ var _utils_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/dom */ "./src/js/utils/dom.js");
 /* harmony import */ var _utils_util__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/util */ "./src/js/utils/util.js");
+/* harmony import */ var _utils_event__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/event */ "./src/js/utils/event.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -1031,6 +1024,7 @@ function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(
 
 
 
+
 var _initializeTemplate = /*#__PURE__*/new WeakSet();
 
 var _initializeDOM = /*#__PURE__*/new WeakSet();
@@ -1045,8 +1039,7 @@ var _basicTemplate = /*#__PURE__*/new WeakMap();
 
 var LottoResultView = /*#__PURE__*/function () {
   function LottoResultView(_ref) {
-    var $app = _ref.$app,
-        _emitEvent = _ref.emitEvent;
+    var $app = _ref.$app;
 
     _classCallCheck(this, LottoResultView);
 
@@ -1062,7 +1055,7 @@ var LottoResultView = /*#__PURE__*/function () {
 
     _classPrivateFieldInitSpec(this, _basicTemplate, {
       writable: true,
-      value: "<section id=\"win-number-input-section\" aria-labelledby=\"win-number-input-title\" class=\"hide\">\n  <h1 id=\"win-number-input-title\" hidden>\uB2F9\uCCA8 \uBC88\uD638 \uC785\uB825 \uC139\uC158</h1>\n  <p>\uC9C0\uB09C \uC8FC \uB2F9\uCCA8\uBC88\uD638 6\uAC1C\uC640 \uBCF4\uB108\uC2A4 \uBC88\uD638 1\uAC1C\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.</p>\n  <form id=\"win-number-input-form\">\n    <div class=\"win-number-input-wrapper\">\n      <div>\n        <p>\uB2F9\uCCA8 \uBC88\uD638</p>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n      </div>\n\n      <div class=\"bonus-number-wrapper flex-column-align-end\">\n        <p>\uBCF4\uB108\uC2A4 \uBC88\uD638</p>\n        <input class=\"bonus-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n      </div>\n    </div>\n\n    <button id=\"result-button\">\uACB0\uACFC \uD655\uC778\uD558\uAE30</button>\n  </form>\n</section>\n<section id=\"win-statistics\" aria-labelledby=\"win-statistics-title\" class=\"hide\">\n  <h1 id=\"win-statistics-title\" hidden>\uB2F9\uCCA8 \uD1B5\uACC4 \uCD9C\uB825</h1>\n  <div class='modal-wrapper'>\n  <div id=\"result-container\"class=\"modal-container\">\n  <span class=\"modal-cancel-button\">\u274C</span>\n     <div id=\"result-contents\">\n     <table  class=\".result-container-section\">\n     <caption hidden>\uACB0\uACFC \uD14C\uC774\uBE14\uC785\uB2C8\uB2E4.</caption>\n     <thead>\n      <tr>\n        <th>\uB4F1\uC218</th>\n        <th>\uB2F9\uCCA8\uAE08</th>\n        <th>\uB2F9\uCCA8\uAC2F\uC218</th>\n      </tr>\n     </thead>\n     <tbody id=\"statistics-table-body\">\n     </tbody>\n     </table>\n     <div id=\"profit-ratio-text\"  class=\".result-container-section\"></div>\n     <button id=\"restart-button\"  class=\".result-container-section\">\uB2E4\uC2DC \uC2DC\uC791\uD558\uAE30</button>\n     </div>\n    </div>\n  </div>\n</section>"
+      value: "<section id=\"win-number-input-section\" aria-labelledby=\"win-number-input-title\" class=\"hide\">\n  <h1 id=\"win-number-input-title\" hidden>\uB2F9\uCCA8 \uBC88\uD638 \uC785\uB825 \uC139\uC158</h1>\n  <p>\uC9C0\uB09C \uC8FC \uB2F9\uCCA8\uBC88\uD638 6\uAC1C\uC640 \uBCF4\uB108\uC2A4 \uBC88\uD638 1\uAC1C\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.</p>\n  <p><b>(\uC911\uBCF5\uC774 \uC5C6\uB294 1~45\uC758 \uC22B\uC790\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.)</b></p>\n  <form id=\"win-number-input-form\">\n    <div class=\"win-number-input-wrapper\">\n      <div>\n        <p>\uB2F9\uCCA8 \uBC88\uD638</p>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n      </div>\n\n      <div class=\"bonus-number-wrapper flex-column-align-end\">\n        <p>\uBCF4\uB108\uC2A4 \uBC88\uD638</p>\n        <input class=\"bonus-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n      </div>\n    </div>\n\n    <button id=\"result-button\">\uACB0\uACFC \uD655\uC778\uD558\uAE30</button>\n  </form>\n</section>\n<section id=\"win-statistics\" aria-labelledby=\"win-statistics-title\" class=\"hide\">\n  <h1 id=\"win-statistics-title\" hidden>\uB2F9\uCCA8 \uD1B5\uACC4 \uCD9C\uB825</h1>\n  <div class='modal-wrapper'>\n  <div id=\"result-container\"class=\"modal-container\">\n  <span class=\"modal-cancel-button\">\u274C</span>\n     <div id=\"result-contents\">\n     <table  class=\".result-container-section\">\n     <caption hidden>\uACB0\uACFC \uD14C\uC774\uBE14\uC785\uB2C8\uB2E4.</caption>\n     <thead>\n      <tr>\n        <th>\uB4F1\uC218</th>\n        <th>\uB2F9\uCCA8\uAE08</th>\n        <th>\uB2F9\uCCA8\uAC2F\uC218</th>\n      </tr>\n     </thead>\n     <tbody id=\"statistics-table-body\">\n     </tbody>\n     </table>\n     <div id=\"profit-ratio-text\"  class=\".result-container-section\"></div>\n     <button id=\"restart-button\"  class=\".result-container-section\">\uB2E4\uC2DC \uC2DC\uC791\uD558\uAE30</button>\n     </div>\n    </div>\n  </div>\n</section>"
     });
 
     this.$app = $app;
@@ -1071,7 +1064,7 @@ var LottoResultView = /*#__PURE__*/function () {
 
     _classPrivateMethodGet(this, _initializeDOM, _initializeDOM2).call(this);
 
-    _classPrivateMethodGet(this, _bindEventHandler, _bindEventHandler2).call(this, _emitEvent);
+    _classPrivateMethodGet(this, _bindEventHandler, _bindEventHandler2).call(this);
   }
 
   _createClass(LottoResultView, [{
@@ -1122,15 +1115,15 @@ function _initializeDOM2() {
   this.$modalCancelButton = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.MODAL_CANCEL_BUTTON);
 }
 
-function _bindEventHandler2(emitEvent) {
+function _bindEventHandler2() {
   this.$winNumberInputForm.addEventListener('submit', function (e) {
-    return emitEvent(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.SUBMIT_RESULT, e);
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.emitEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.SUBMIT_RESULT, e);
   });
   this.$restartButton.addEventListener('click', function (e) {
-    return emitEvent(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_RESTART_BUTTON, e);
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.emitEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_RESTART_BUTTON, e);
   });
   this.$winStatistics.addEventListener('click', function (e) {
-    return emitEvent(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_MODAL, e);
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.emitEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_MODAL, e);
   });
 }
 
@@ -1204,7 +1197,7 @@ var _clear = /*#__PURE__*/new WeakSet();
 var _reducer = /*#__PURE__*/new WeakMap();
 
 var LottoViewManager = /*#__PURE__*/function () {
-  function LottoViewManager(_emitEvent) {
+  function LottoViewManager() {
     var _this = this,
         _value;
 
@@ -1245,7 +1238,7 @@ var LottoViewManager = /*#__PURE__*/function () {
 
     _classPrivateMethodGet(this, _clear, _clear2).call(this);
 
-    _classPrivateMethodGet(this, _initializeViews, _initializeViews2).call(this, _emitEvent);
+    _classPrivateMethodGet(this, _initializeViews, _initializeViews2).call(this);
   }
 
   _createClass(LottoViewManager, [{
@@ -1263,15 +1256,13 @@ var LottoViewManager = /*#__PURE__*/function () {
   return LottoViewManager;
 }();
 
-function _initializeViews2(emitEvent) {
+function _initializeViews2() {
   _classPrivateFieldSet(this, _containerView, new _LottoContainerView__WEBPACK_IMPORTED_MODULE_3__["default"]({
-    $app: this.$app,
-    emitEvent: emitEvent
+    $app: this.$app
   }));
 
   _classPrivateFieldSet(this, _resultView, new _LottoResultView__WEBPACK_IMPORTED_MODULE_4__["default"]({
-    $app: this.$app,
-    emitEvent: emitEvent
+    $app: this.$app
   }));
 }
 
