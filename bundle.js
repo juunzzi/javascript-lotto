@@ -71,7 +71,7 @@ var _lottoViewManager = /*#__PURE__*/new WeakMap();
 
 var _initializeManagers = /*#__PURE__*/new WeakSet();
 
-var _bindEventHandler = /*#__PURE__*/new WeakSet();
+var _setEventHandler = /*#__PURE__*/new WeakSet();
 
 var LottoGameManager = /*#__PURE__*/function () {
   function LottoGameManager() {
@@ -79,7 +79,7 @@ var LottoGameManager = /*#__PURE__*/function () {
 
     _classCallCheck(this, LottoGameManager);
 
-    _classPrivateMethodInitSpec(this, _bindEventHandler);
+    _classPrivateMethodInitSpec(this, _setEventHandler);
 
     _classPrivateMethodInitSpec(this, _initializeManagers);
 
@@ -148,12 +148,28 @@ var LottoGameManager = /*#__PURE__*/function () {
     _defineProperty(this, "onClickRestartButton", function () {
       _this.start();
     });
+
+    _defineProperty(this, "onInputOverMaxLength", function (e) {
+      var inputElement = e.target;
+      var value = inputElement.value,
+          maxLength = inputElement.maxLength;
+
+      if (value.length > maxLength) {
+        var _inputElement$nextEle;
+
+        /** 인풋 글자 수 제한. */
+        inputElement.value = value.slice(0, maxLength);
+        /** 다음 자식으로 포커스 넘어감 */
+
+        (_inputElement$nextEle = inputElement.nextElementSibling) === null || _inputElement$nextEle === void 0 ? void 0 : _inputElement$nextEle.focus();
+      }
+    });
   }
 
   _createClass(LottoGameManager, [{
     key: "start",
     value: function start() {
-      _classPrivateMethodGet(this, _bindEventHandler, _bindEventHandler2).call(this);
+      _classPrivateMethodGet(this, _setEventHandler, _setEventHandler2).call(this);
 
       _classPrivateMethodGet(this, _initializeManagers, _initializeManagers2).call(this);
     }
@@ -166,7 +182,9 @@ var LottoGameManager = /*#__PURE__*/function () {
       });
 
       _classPrivateFieldGet(this, _lottoViewManager).work({
-        payload: lottoList,
+        payload: lottoList.map(function (lotto) {
+          return lotto.getLottoNumbers();
+        }),
         action: _constants_actions__WEBPACK_IMPORTED_MODULE_3__.VIEW_ACTION.UPDATE_LOTTO_LIST
       });
     }
@@ -207,12 +225,13 @@ function _initializeManagers2(emitEvent) {
   _classPrivateFieldSet(this, _lottoViewManager, new _views__WEBPACK_IMPORTED_MODULE_1__["default"](emitEvent));
 }
 
-function _bindEventHandler2() {
-  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.bindEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.SUBMIT_CHARGE, this.onSubmitCharge);
-  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.bindEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.CHANGE_ALIGN_STATE, this.onChangeAlignState);
-  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.bindEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.SUBMIT_RESULT, this.onSubmitResult);
-  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.bindEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.CLICK_RESTART_BUTTON, this.onClickRestartButton);
-  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.bindEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.CLICK_MODAL, this.onClickModal);
+function _setEventHandler2() {
+  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.setListener)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.SUBMIT_CHARGE, this.onSubmitCharge);
+  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.setListener)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.CHANGE_ALIGN_STATE, this.onChangeAlignState);
+  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.setListener)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.SUBMIT_RESULT, this.onSubmitResult);
+  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.setListener)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.CLICK_RESTART_BUTTON, this.onClickRestartButton);
+  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.setListener)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.CLICK_MODAL, this.onClickModal);
+  (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.setListener)(_constants_events__WEBPACK_IMPORTED_MODULE_6__.EVENT.INPUT_OVER_MAX_LENGTH, this.onInputOverMaxLength);
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (LottoGameManager);
@@ -276,7 +295,8 @@ var EVENT = {
   CHANGE_ALIGN_STATE: ' onChangeAlignState',
   SUBMIT_RESULT: 'onSubmitResult',
   CLICK_RESTART_BUTTON: 'onClickRestartButton ',
-  CLICK_MODAL: 'onClickModal'
+  CLICK_MODAL: 'onClickModal',
+  INPUT_OVER_MAX_LENGTH: 'onInputOverMaxLength'
 };
 
 /***/ }),
@@ -366,7 +386,9 @@ var SELECTOR = {
   PROFIT_RATIO_TEXT: '#profit-ratio-text',
   RESTART_BUTTON: '#restart-button',
   MODAL_CANCEL_BUTTON: '.modal-cancel-button',
-  ALIGN_CONVERTER_CONTAINER: '#align-converter-container'
+  ALIGN_CONVERTER_CONTAINER: '#align-converter-container',
+  HIDE: 'hide',
+  SHOW: 'show'
 };
 
 /***/ }),
@@ -402,47 +424,77 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
+function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
+
+function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
+
+function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
+
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
+
+function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
+
+function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
+
+function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
+
+function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
+
+function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
 
 
 
+
+
+var _lottoNumbers = /*#__PURE__*/new WeakMap();
+
+var _createLottoNumbers = /*#__PURE__*/new WeakSet();
 
 var Lotto = /*#__PURE__*/function () {
   function Lotto() {
     _classCallCheck(this, Lotto);
 
-    this.lottoNumbers = this.createLottoNumbers();
+    _classPrivateMethodInitSpec(this, _createLottoNumbers);
+
+    _classPrivateFieldInitSpec(this, _lottoNumbers, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateMethodGet(this, _createLottoNumbers, _createLottoNumbers2).call(this);
   }
 
   _createClass(Lotto, [{
     key: "getLottoNumbers",
     value: function getLottoNumbers() {
-      return this.lottoNumbers;
-    }
-  }, {
-    key: "createLottoNumbers",
-    value: function createLottoNumbers() {
-      var lottoNumbers = (0,_utils_gameUtil__WEBPACK_IMPORTED_MODULE_2__.shuffle)(_toConsumableArray(new Array(_constants_number__WEBPACK_IMPORTED_MODULE_0__.NUMBER.LOTTO_MAX_NUMBER)).map(function (_, idx) {
-        return idx + 1;
-      }));
-      return lottoNumbers.slice(0, _constants_number__WEBPACK_IMPORTED_MODULE_0__.NUMBER.LOTTO_NUMBER_LENGTH);
+      return _classPrivateFieldGet(this, _lottoNumbers);
     }
   }, {
     key: "computeWinResult",
     value: function computeWinResult(winningNumbers, bonusNumber) {
       var _RANK$;
 
-      var _this$lottoNumbers$fi = this.lottoNumbers.filter(function (number) {
+      var _classPrivateFieldGet2 = _classPrivateFieldGet(this, _lottoNumbers).filter(function (number) {
         return winningNumbers.includes(number);
       }),
-          numberMatchCount = _this$lottoNumbers$fi.length;
+          numberMatchCount = _classPrivateFieldGet2.length;
 
-      var isMatchBonus = this.lottoNumbers.includes(bonusNumber);
+      var isMatchBonus = _classPrivateFieldGet(this, _lottoNumbers).includes(bonusNumber);
+
       return (_RANK$ = _constants_rank__WEBPACK_IMPORTED_MODULE_1__.RANK["".concat(numberMatchCount).concat(isMatchBonus)]) !== null && _RANK$ !== void 0 ? _RANK$ : _constants_rank__WEBPACK_IMPORTED_MODULE_1__.RANK.UNRANK;
     }
   }]);
 
   return Lotto;
 }();
+
+function _createLottoNumbers2() {
+  var lottoNumbers = (0,_utils_gameUtil__WEBPACK_IMPORTED_MODULE_2__.shuffle)(_toConsumableArray(new Array(_constants_number__WEBPACK_IMPORTED_MODULE_0__.NUMBER.LOTTO_MAX_NUMBER)).map(function (_, idx) {
+    return idx + 1;
+  }));
+
+  _classPrivateFieldSet(this, _lottoNumbers, lottoNumbers.slice(0, _constants_number__WEBPACK_IMPORTED_MODULE_0__.NUMBER.LOTTO_NUMBER_LENGTH));
+}
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Lotto);
 
@@ -487,23 +539,58 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
+function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
+
+function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
+
+function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
+
+function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
+
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
+
+function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
+
+function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
+
+function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
+
+function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
 
 
 
 
 
+
+
+var _lottoList = /*#__PURE__*/new WeakMap();
+
+var _computeStatistics = /*#__PURE__*/new WeakSet();
+
+var _computeProfitRatio = /*#__PURE__*/new WeakSet();
+
+var _changeStatisticsMap = /*#__PURE__*/new WeakSet();
 
 var LottoList = /*#__PURE__*/function () {
   function LottoList() {
     _classCallCheck(this, LottoList);
 
-    this.lottoList = null;
+    _classPrivateMethodInitSpec(this, _changeStatisticsMap);
+
+    _classPrivateMethodInitSpec(this, _computeProfitRatio);
+
+    _classPrivateMethodInitSpec(this, _computeStatistics);
+
+    _classPrivateFieldInitSpec(this, _lottoList, {
+      writable: true,
+      value: null
+    });
   }
 
   _createClass(LottoList, [{
     key: "getLottoList",
     value: function getLottoList() {
-      return this.lottoList;
+      return _classPrivateFieldGet(this, _lottoList);
     }
   }, {
     key: "createLottoList",
@@ -515,7 +602,7 @@ var LottoList = /*#__PURE__*/function () {
         return new _Lotto__WEBPACK_IMPORTED_MODULE_4__["default"]();
       });
 
-      this.lottoList = lottoList;
+      _classPrivateFieldSet(this, _lottoList, lottoList);
     }
   }, {
     key: "exchangeChargeToLottoAmount",
@@ -530,8 +617,10 @@ var LottoList = /*#__PURE__*/function () {
     key: "computeStatisticsAndProfitRatio",
     value: function computeStatisticsAndProfitRatio(winningNumbers, bonusNumber) {
       if ((0,_utils_validator__WEBPACK_IMPORTED_MODULE_3__.isValidWinningNumber)([].concat(_toConsumableArray(winningNumbers), [bonusNumber]))) {
-        var statistics = this.computeStatistics(winningNumbers, bonusNumber);
-        var profitRatio = this.computeProfitRatio(statistics);
+        var statistics = _classPrivateMethodGet(this, _computeStatistics, _computeStatistics2).call(this, winningNumbers, bonusNumber);
+
+        var profitRatio = _classPrivateMethodGet(this, _computeProfitRatio, _computeProfitRatio2).call(this, statistics);
+
         return {
           statistics: statistics,
           profitRatio: profitRatio
@@ -540,44 +629,39 @@ var LottoList = /*#__PURE__*/function () {
 
       throw new Error(_constants_errorMessage__WEBPACK_IMPORTED_MODULE_0__.ERROR_MESSAGE.WIN_NUMBER_IS_INVALIDATE);
     }
-  }, {
-    key: "computeStatistics",
-    value: function computeStatistics(winningNumbers, bonusNumber) {
-      var statisticsArray = this.lottoList.map(function (lotto) {
-        return lotto.computeWinResult(winningNumbers, bonusNumber);
-      });
-      var statisticsMap = this.changeStatisticsMap(statisticsArray);
-      return statisticsMap;
-    }
-  }, {
-    key: "computeProfitRatio",
-    value: function computeProfitRatio(statistics) {
-      var lottoPurchaseAmount = this.lottoList.length * _constants_number__WEBPACK_IMPORTED_MODULE_1__.NUMBER.LOTTO_PRICE;
-      var profitAmount = Object.keys(statistics).reduce(function (prev, currentKey) {
-        var count = statistics[currentKey];
-        var price = _constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_PRICE[currentKey];
-        return prev + count * price;
-      }, 0);
-      return profitAmount / lottoPurchaseAmount * 100;
-    }
-    /** 배열 형태 ex) ['1등','1등','2등','3등','꽝','꽝'] 를*/
-
-    /** 객체 형태 ex) {'1등' : 2, '2등' : 1} 로 바꾼다*/
-
-  }, {
-    key: "changeStatisticsMap",
-    value: function changeStatisticsMap(statisticsArray) {
-      var statisticsMap = Object.values(_constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_KEYS).reduce(function (prev, key) {
-        return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, "".concat(key), 0));
-      }, {});
-      return statisticsArray.reduce(function (prev, result) {
-        return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, "".concat(result), prev[result] + 1));
-      }, statisticsMap);
-    }
   }]);
 
   return LottoList;
 }();
+
+function _computeStatistics2(winningNumbers, bonusNumber) {
+  var statisticsArray = _classPrivateFieldGet(this, _lottoList).map(function (lotto) {
+    return lotto.computeWinResult(winningNumbers, bonusNumber);
+  });
+
+  var statisticsMap = _classPrivateMethodGet(this, _changeStatisticsMap, _changeStatisticsMap2).call(this, statisticsArray);
+
+  return statisticsMap;
+}
+
+function _computeProfitRatio2(statistics) {
+  var lottoPurchaseAmount = _classPrivateFieldGet(this, _lottoList).length * _constants_number__WEBPACK_IMPORTED_MODULE_1__.NUMBER.LOTTO_PRICE;
+  var profitAmount = Object.keys(statistics).reduce(function (prev, currentKey) {
+    var count = statistics[currentKey];
+    var price = _constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_PRICE[currentKey];
+    return prev + count * price;
+  }, 0);
+  return profitAmount / lottoPurchaseAmount * 100;
+}
+
+function _changeStatisticsMap2(statisticsArray) {
+  var statisticsMap = Object.values(_constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_KEYS).reduce(function (prev, key) {
+    return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, "".concat(key), 0));
+  }, {});
+  return statisticsArray.reduce(function (prev, result) {
+    return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, "".concat(result), prev[result] + 1));
+  }, statisticsMap);
+}
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (LottoList);
 
@@ -720,24 +804,31 @@ var isCancelModal = function isCancelModal(className) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "bindEvent": () => (/* binding */ bindEvent),
-/* harmony export */   "emitEvent": () => (/* binding */ emitEvent)
+/* harmony export */   "setListener": () => (/* binding */ setListener),
+/* harmony export */   "emitListener": () => (/* binding */ emitListener)
 /* harmony export */ });
+/** 비즈니스 로직을 담은 클래스가 여러 개여도 모든 핸들러는 이 객체로 들어오게됩니다. */
+
+/** 여러 화면에서 사용되는 핸들러가 있다면 하나의 객체에 담아두고 필요할 때 쓰도록 하였습니다. */
+
 /** singleton */
 var _ref = function () {
   var eventListeners = {};
   return {
-    bindEvent: function bindEvent(eventName, eventListener) {
+    setListener: function setListener(eventName, eventListener) {
       eventListeners[eventName] = eventListener;
     },
-    emitEvent: function emitEvent(eventName, e) {
+    emitListener: function emitListener(eventName, e) {
       var eventListener = eventListeners[eventName];
       eventListener(e);
+    },
+    removeListener: function removeListener(eventName) {
+      delete eventListeners[eventName];
     }
   };
 }(),
-    bindEvent = _ref.bindEvent,
-    emitEvent = _ref.emitEvent;
+    setListener = _ref.setListener,
+    emitListener = _ref.emitListener;
 
 
 
@@ -864,24 +955,46 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
-
 function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
+
+function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
 
 function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
 
 function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
 
-function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
-
 function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
 
 function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
 
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
+
+function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
+
+function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
 
 
 
 
+
+
+var _app = /*#__PURE__*/new WeakMap();
+
+var _chargeForm = /*#__PURE__*/new WeakMap();
+
+var _alignConverter = /*#__PURE__*/new WeakMap();
+
+var _lottoContainer = /*#__PURE__*/new WeakMap();
+
+var _purchasedMessage = /*#__PURE__*/new WeakMap();
+
+var _alignConverterContainer = /*#__PURE__*/new WeakMap();
+
+var _onSubmitCharge = /*#__PURE__*/new WeakMap();
+
+var _onChangeAlignState = /*#__PURE__*/new WeakMap();
+
+var _onInputOverMaxLength = /*#__PURE__*/new WeakMap();
 
 var _initializeTemplate = /*#__PURE__*/new WeakSet();
 
@@ -907,12 +1020,57 @@ var LottoContainerView = /*#__PURE__*/function () {
 
     _classPrivateMethodInitSpec(this, _initializeTemplate);
 
-    _classPrivateFieldInitSpec(this, _basicTemplate, {
+    _classPrivateFieldInitSpec(this, _app, {
       writable: true,
-      value: "\n  <h1 class=\"header-title\">\uD83C\uDFB1 \uD589\uC6B4\uC758 \uB85C\uB610</h1>\n  <section id=\"charge-input-section\" aria-labelledby=\"charge-input-section-title\">\n    <h1 id=\"charge-input-section-title\" hidden>\uAE08\uC561\uC744 \uC785\uB825\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <p>\uAD6C\uC785\uD560 \uAE08\uC561\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694. <b>(\uC785\uB825 \uAC00\uB2A5 \uCD5C\uB300 \uAE08\uC561\uC740 99999\uC6D0\uC785\uB2C8\uB2E4.)</b></p>\n    <form id=\"charge-input-form\">\n      <input id=\"charge-input\" type=\"number\" placeholder=\"\uAE08\uC561\" min=\"1000\" max=\"100000\"/>\n      <button id=\"charge-button\">\uAD6C\uC785</button>\n    </form>\n  </section>\n\n  <section id=\"lotto-section\" aria-labelledby=\"lotto-section-title\">\n    <h1 id=\"lotto-section-title\" hidden>\uAD6C\uB9E4\uD55C \uB85C\uB610\uB97C \uD655\uC778\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <div class=\"lotto-wrapper\">\n      <span id=\"purchased-message\"></span>\n      <div id=\"lotto-container\" data-visible-state=\"false\">\uB85C\uB610\uB97C \uAD6C\uB9E4\uD574\uC8FC\uC138\uC694 \uD83D\uDE33</div>\n    </div>\n    <div id=\"align-converter-container\" class=\"flex-column-align-end\" data-visible-state=\"false\">\n      <label for=\"align-converter\" class=\"flex-column-align-end\">\n        <span>\uBC88\uD638 \uBCF4\uAE30</span>\n        <input id=\"align-converter\" type=\"checkbox\" class=\"converter\" />\n        <span class=\"checkmark\">\n          <span class=\"circle\"></span>\n        </span>\n      </label>\n    </div>\n  </section>"
+      value: null
     });
 
-    this.$app = $app;
+    _classPrivateFieldInitSpec(this, _chargeForm, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _alignConverter, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _lottoContainer, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _purchasedMessage, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _alignConverterContainer, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _onSubmitCharge, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _onChangeAlignState, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _onInputOverMaxLength, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _basicTemplate, {
+      writable: true,
+      value: "\n  <h1 class=\"header-title\">\uD83C\uDFB1 \uD589\uC6B4\uC758 \uB85C\uB610</h1>\n  <section id=\"charge-input-section\" aria-labelledby=\"charge-input-section-title\">\n    <h1 id=\"charge-input-section-title\" hidden>\uAE08\uC561\uC744 \uC785\uB825\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <p>\uAD6C\uC785\uD560 \uAE08\uC561\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694. <b>(\uC785\uB825 \uAC00\uB2A5 \uCD5C\uB300 \uAE08\uC561\uC740 99999\uC6D0\uC785\uB2C8\uB2E4.)</b></p>\n    <form id=\"charge-input-form\">\n      <input id=\"charge-input\" type=\"number\" placeholder=\"\uAE08\uC561\" min=\"1000\" max=\"100000\" maxlength=\"5\"/>\n      <button id=\"charge-button\">\uAD6C\uC785</button>\n    </form>\n  </section>\n\n  <section id=\"lotto-section\" aria-labelledby=\"lotto-section-title\">\n    <h1 id=\"lotto-section-title\" hidden>\uAD6C\uB9E4\uD55C \uB85C\uB610\uB97C \uD655\uC778\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <div class=\"lotto-wrapper\">\n      <span id=\"purchased-message\"></span>\n      <div id=\"lotto-container\" data-visible-state=\"false\">\uB85C\uB610\uB97C \uAD6C\uB9E4\uD574\uC8FC\uC138\uC694 \uD83D\uDE33</div>\n    </div>\n    <div id=\"align-converter-container\" class=\"flex-column-align-end\" data-visible-state=\"false\">\n      <label for=\"align-converter\" class=\"flex-column-align-end\">\n        <span>\uBC88\uD638 \uBCF4\uAE30</span>\n        <input id=\"align-converter\" type=\"checkbox\" class=\"converter\" />\n        <span class=\"checkmark\">\n          <span class=\"circle\"></span>\n        </span>\n      </label>\n    </div>\n  </section>"
+    });
+
+    _classPrivateFieldSet(this, _app, $app);
 
     _classPrivateMethodGet(this, _initializeTemplate, _initializeTemplate2).call(this);
 
@@ -923,29 +1081,30 @@ var LottoContainerView = /*#__PURE__*/function () {
 
   _createClass(LottoContainerView, [{
     key: "renderLottoSection",
-    value: function renderLottoSection(lottoList) {
-      this.renderPurchasedMessage(lottoList.length);
-      this.renderLottoList(lottoList);
+    value: function renderLottoSection(lottoNumbersArray) {
+      this.renderPurchasedMessage(lottoNumbersArray.length);
+      this.renderLottoList(lottoNumbersArray);
     }
   }, {
     key: "renderLottoList",
-    value: function renderLottoList(lottoList) {
+    value: function renderLottoList(lottoNumbersArray) {
       var _this = this;
 
-      this.$lottoContainer.innerHTML = lottoList.map(function (lotto) {
-        return _classPrivateMethodGet(_this, _generateLottoTemplate, _generateLottoTemplate2).call(_this, lotto);
+      _classPrivateFieldGet(this, _lottoContainer).innerHTML = lottoNumbersArray.map(function (lottoNumbers) {
+        return _classPrivateMethodGet(_this, _generateLottoTemplate, _generateLottoTemplate2).call(_this, lottoNumbers);
       }).join('');
     }
   }, {
     key: "renderPurchasedMessage",
     value: function renderPurchasedMessage(lottoAmount) {
-      this.$purchasedMessage.innerText = "\uCD1D ".concat(lottoAmount, "\uAC1C\uB97C \uAD6C\uB9E4\uD558\uC600\uC2B5\uB2C8\uB2E4.");
+      _classPrivateFieldGet(this, _purchasedMessage).innerText = "\uCD1D ".concat(lottoAmount, "\uAC1C\uB97C \uAD6C\uB9E4\uD558\uC600\uC2B5\uB2C8\uB2E4.");
     }
   }, {
     key: "renderAlignState",
     value: function renderAlignState(visibleState) {
-      this.$lottoContainer.setAttribute('data-visible-state', visibleState);
-      this.$alignConverterContainer.setAttribute('data-visible-state', visibleState);
+      _classPrivateFieldGet(this, _lottoContainer).setAttribute('data-visible-state', visibleState);
+
+      _classPrivateFieldGet(this, _alignConverterContainer).setAttribute('data-visible-state', visibleState);
     }
   }]);
 
@@ -953,28 +1112,42 @@ var LottoContainerView = /*#__PURE__*/function () {
 }();
 
 function _initializeTemplate2() {
-  this.$app.insertAdjacentHTML('beforeend', _classPrivateFieldGet(this, _basicTemplate));
+  _classPrivateFieldGet(this, _app).insertAdjacentHTML('beforeend', _classPrivateFieldGet(this, _basicTemplate));
 }
 
 function _initializeDOM2() {
-  this.$chargeForm = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.CHARGE_INPUT_FORM);
-  this.$alignConverter = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.ALIGN_CONVERTER);
-  this.$lottoContainer = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.LOTTO_CONTAINER);
-  this.$purchasedMessage = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.PURCHASED_MESSAGE);
-  this.$alignConverterContainer = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.ALIGN_CONVERTER_CONTAINER);
+  _classPrivateFieldSet(this, _chargeForm, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.CHARGE_INPUT_FORM));
+
+  _classPrivateFieldSet(this, _alignConverter, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.ALIGN_CONVERTER));
+
+  _classPrivateFieldSet(this, _lottoContainer, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.LOTTO_CONTAINER));
+
+  _classPrivateFieldSet(this, _purchasedMessage, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.PURCHASED_MESSAGE));
+
+  _classPrivateFieldSet(this, _alignConverterContainer, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.ALIGN_CONVERTER_CONTAINER));
 }
 
 function _bindEventHandler2() {
-  this.$chargeForm.addEventListener('submit', function (e) {
-    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_3__.emitEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.SUBMIT_CHARGE, e);
+  _classPrivateFieldSet(this, _onSubmitCharge, function (e) {
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_3__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.SUBMIT_CHARGE, e);
   });
-  this.$alignConverter.addEventListener('change', function (e) {
-    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_3__.emitEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CHANGE_ALIGN_STATE, e);
+
+  _classPrivateFieldSet(this, _onChangeAlignState, function (e) {
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_3__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CHANGE_ALIGN_STATE, e);
   });
+
+  _classPrivateFieldSet(this, _onInputOverMaxLength, function (e) {
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_3__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.INPUT_OVER_MAX_LENGTH, e);
+  });
+
+  _classPrivateFieldGet(this, _chargeForm).addEventListener('submit', _classPrivateFieldGet(this, _onSubmitCharge));
+
+  _classPrivateFieldGet(this, _alignConverter).addEventListener('change', _classPrivateFieldGet(this, _onChangeAlignState));
+
+  _classPrivateFieldGet(this, _chargeForm).addEventListener('input', _classPrivateFieldGet(this, _onInputOverMaxLength));
 }
 
-function _generateLottoTemplate2(_ref2) {
-  var lottoNumbers = _ref2.lottoNumbers;
+function _generateLottoTemplate2(lottoNumbers) {
   return "<div class=\"lotto\">\n      <span>\uD83C\uDF9F\uFE0F</span>\n      <span class=\"number\">".concat(lottoNumbers.join(', '), "</span>\n      </div>");
 }
 
@@ -1004,26 +1177,52 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
-
 function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
+
+function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
 
 function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
 
 function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
 
-function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
-
 function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
 
 function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
 
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
+
+function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
+
+function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
 
 
 
 
 
 
+
+
+var _app = /*#__PURE__*/new WeakMap();
+
+var _winNumberInputSection = /*#__PURE__*/new WeakMap();
+
+var _winNumberInputForm = /*#__PURE__*/new WeakMap();
+
+var _winStatistics = /*#__PURE__*/new WeakMap();
+
+var _statisticsTableBody = /*#__PURE__*/new WeakMap();
+
+var _profitRatioText = /*#__PURE__*/new WeakMap();
+
+var _restartButton = /*#__PURE__*/new WeakMap();
+
+var _onSubmitResult = /*#__PURE__*/new WeakMap();
+
+var _onClickRestartButton = /*#__PURE__*/new WeakMap();
+
+var _onClickModal = /*#__PURE__*/new WeakMap();
+
+var _onInputOverMaxLength = /*#__PURE__*/new WeakMap();
 
 var _initializeTemplate = /*#__PURE__*/new WeakSet();
 
@@ -1053,12 +1252,67 @@ var LottoResultView = /*#__PURE__*/function () {
 
     _classPrivateMethodInitSpec(this, _initializeTemplate);
 
-    _classPrivateFieldInitSpec(this, _basicTemplate, {
+    _classPrivateFieldInitSpec(this, _app, {
       writable: true,
-      value: "<section id=\"win-number-input-section\" aria-labelledby=\"win-number-input-title\" class=\"hide\">\n  <h1 id=\"win-number-input-title\" hidden>\uB2F9\uCCA8 \uBC88\uD638 \uC785\uB825 \uC139\uC158</h1>\n  <p>\uC9C0\uB09C \uC8FC \uB2F9\uCCA8\uBC88\uD638 6\uAC1C\uC640 \uBCF4\uB108\uC2A4 \uBC88\uD638 1\uAC1C\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.</p>\n  <p><b>(\uC911\uBCF5\uC774 \uC5C6\uB294 1~45\uC758 \uC22B\uC790\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.)</b></p>\n  <form id=\"win-number-input-form\">\n    <div class=\"win-number-input-wrapper\">\n      <div>\n        <p>\uB2F9\uCCA8 \uBC88\uD638</p>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n      </div>\n\n      <div class=\"bonus-number-wrapper flex-column-align-end\">\n        <p>\uBCF4\uB108\uC2A4 \uBC88\uD638</p>\n        <input class=\"bonus-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n      </div>\n    </div>\n\n    <button id=\"result-button\">\uACB0\uACFC \uD655\uC778\uD558\uAE30</button>\n  </form>\n</section>\n<section id=\"win-statistics\" aria-labelledby=\"win-statistics-title\" class=\"hide\">\n  <h1 id=\"win-statistics-title\" hidden>\uB2F9\uCCA8 \uD1B5\uACC4 \uCD9C\uB825</h1>\n  <div class='modal-wrapper'>\n  <div id=\"result-container\"class=\"modal-container\">\n  <span class=\"modal-cancel-button\">\u274C</span>\n     <div id=\"result-contents\">\n     <table  class=\".result-container-section\">\n     <caption hidden>\uACB0\uACFC \uD14C\uC774\uBE14\uC785\uB2C8\uB2E4.</caption>\n     <thead>\n      <tr>\n        <th>\uB4F1\uC218</th>\n        <th>\uB2F9\uCCA8\uAE08</th>\n        <th>\uB2F9\uCCA8\uAC2F\uC218</th>\n      </tr>\n     </thead>\n     <tbody id=\"statistics-table-body\">\n     </tbody>\n     </table>\n     <div id=\"profit-ratio-text\"  class=\".result-container-section\"></div>\n     <button id=\"restart-button\"  class=\".result-container-section\">\uB2E4\uC2DC \uC2DC\uC791\uD558\uAE30</button>\n     </div>\n    </div>\n  </div>\n</section>"
+      value: null
     });
 
-    this.$app = $app;
+    _classPrivateFieldInitSpec(this, _winNumberInputSection, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _winNumberInputForm, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _winStatistics, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _statisticsTableBody, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _profitRatioText, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _restartButton, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _onSubmitResult, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _onClickRestartButton, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _onClickModal, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _onInputOverMaxLength, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _basicTemplate, {
+      writable: true,
+      value: "<section id=\"win-number-input-section\" aria-labelledby=\"win-number-input-title\" class=\"hide\">\n  <h1 id=\"win-number-input-title\" hidden>\uB2F9\uCCA8 \uBC88\uD638 \uC785\uB825 \uC139\uC158</h1>\n  <p>\uC9C0\uB09C \uC8FC \uB2F9\uCCA8\uBC88\uD638 6\uAC1C\uC640 \uBCF4\uB108\uC2A4 \uBC88\uD638 1\uAC1C\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.</p>\n  <p><b>(\uC911\uBCF5\uC774 \uC5C6\uB294 1~45\uC758 \uC22B\uC790\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.)</b></p>\n  <form id=\"win-number-input-form\">\n    <div class=\"win-number-input-wrapper\">\n      <div>\n        <p>\uB2F9\uCCA8 \uBC88\uD638</p>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <label for=\"bonus-number-input\" />\n        </div>\n        <div class=\"bonus-number-wrapper flex-column-align-end\">\n        <p>\uBCF4\uB108\uC2A4 \uBC88\uD638</p>\n        <input id=\"bonus-number-input\" class=\"bonus-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n      </div>\n    </div>\n\n    <button id=\"result-button\">\uACB0\uACFC \uD655\uC778\uD558\uAE30</button>\n  </form>\n</section>\n<section id=\"win-statistics\" aria-labelledby=\"win-statistics-title\" class=\"hide\">\n  <h1 id=\"win-statistics-title\" hidden>\uB2F9\uCCA8 \uD1B5\uACC4 \uCD9C\uB825</h1>\n  <div class='modal-wrapper'>\n  <div id=\"result-container\"class=\"modal-container\">\n  <span class=\"modal-cancel-button\">\u274C</span>\n     <div id=\"result-contents\">\n     <table  class=\".result-container-section\">\n     <caption hidden>\uACB0\uACFC \uD14C\uC774\uBE14\uC785\uB2C8\uB2E4.</caption>\n     <thead>\n      <tr>\n        <th>\uB4F1\uC218</th>\n        <th>\uB2F9\uCCA8\uAE08</th>\n        <th>\uB2F9\uCCA8\uAC2F\uC218</th>\n      </tr>\n     </thead>\n     <tbody id=\"statistics-table-body\">\n     </tbody>\n     </table>\n     <div id=\"profit-ratio-text\"  class=\".result-container-section\"></div>\n     <button id=\"restart-button\"  class=\".result-container-section\">\uB2E4\uC2DC \uC2DC\uC791\uD558\uAE30</button>\n     </div>\n    </div>\n  </div>\n</section>"
+    });
+
+    _classPrivateFieldSet(this, _app, $app);
 
     _classPrivateMethodGet(this, _initializeTemplate, _initializeTemplate2).call(this);
 
@@ -1070,7 +1324,7 @@ var LottoResultView = /*#__PURE__*/function () {
   _createClass(LottoResultView, [{
     key: "showWinNumberInputSection",
     value: function showWinNumberInputSection() {
-      this.$winNumberInputSection.classList.replace('hide', 'show');
+      _classPrivateFieldGet(this, _winNumberInputSection).classList.replace(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.HIDE, _constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.SHOW);
     }
   }, {
     key: "renderStatisticsModalContents",
@@ -1079,22 +1333,22 @@ var LottoResultView = /*#__PURE__*/function () {
 
       var statistics = _ref2.statistics,
           profitRatio = _ref2.profitRatio;
-      this.$statisticsTableBody.innerHTML = Object.keys(statistics).reduce(function (prev, currentKey) {
+      _classPrivateFieldGet(this, _statisticsTableBody).innerHTML = Object.keys(statistics).reduce(function (prev, currentKey) {
         var price = _constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_PRICE[currentKey];
         var count = statistics[currentKey];
         return prev + _classPrivateMethodGet(_this, _generateStatisticsTableData, _generateStatisticsTableData2).call(_this, currentKey, price, count);
       }, '');
-      this.$profitRatioText.innerHTML = _classPrivateMethodGet(this, _generateProfitRatioText, _generateProfitRatioText2).call(this, profitRatio);
+      _classPrivateFieldGet(this, _profitRatioText).innerHTML = _classPrivateMethodGet(this, _generateProfitRatioText, _generateProfitRatioText2).call(this, profitRatio);
     }
   }, {
     key: "hideStatisticsModal",
     value: function hideStatisticsModal() {
-      this.$winStatistics.classList.replace('show', 'hide');
+      _classPrivateFieldGet(this, _winStatistics).classList.replace(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.SHOW, _constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.HIDE);
     }
   }, {
     key: "showStatisticsModal",
     value: function showStatisticsModal() {
-      this.$winStatistics.classList.replace('hide', 'show');
+      _classPrivateFieldGet(this, _winStatistics).classList.replace(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.HIDE, _constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.SHOW);
     }
   }]);
 
@@ -1102,29 +1356,47 @@ var LottoResultView = /*#__PURE__*/function () {
 }();
 
 function _initializeTemplate2() {
-  this.$app.insertAdjacentHTML('beforeend', _classPrivateFieldGet(this, _basicTemplate));
+  _classPrivateFieldGet(this, _app).insertAdjacentHTML('beforeend', _classPrivateFieldGet(this, _basicTemplate));
 }
 
 function _initializeDOM2() {
-  this.$winNumberInputSection = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.WIN_NUMBER_INPUT_SECTION);
-  this.$winNumberInputForm = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.WIN_NUMBER_INPUT_FORM);
-  this.$winStatistics = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.WIN_STATISTICS);
-  this.$statisticsTableBody = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.STATISTICS_TABLE_BODY);
-  this.$profitRatioText = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.PROFIT_RATIO_TEXT);
-  this.$restartButton = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.RESTART_BUTTON);
-  this.$modalCancelButton = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.MODAL_CANCEL_BUTTON);
+  _classPrivateFieldSet(this, _winNumberInputSection, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.WIN_NUMBER_INPUT_SECTION));
+
+  _classPrivateFieldSet(this, _winNumberInputForm, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.WIN_NUMBER_INPUT_FORM));
+
+  _classPrivateFieldSet(this, _winStatistics, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.WIN_STATISTICS));
+
+  _classPrivateFieldSet(this, _statisticsTableBody, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.STATISTICS_TABLE_BODY));
+
+  _classPrivateFieldSet(this, _profitRatioText, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.PROFIT_RATIO_TEXT));
+
+  _classPrivateFieldSet(this, _restartButton, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_3__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.RESTART_BUTTON));
 }
 
 function _bindEventHandler2() {
-  this.$winNumberInputForm.addEventListener('submit', function (e) {
-    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.emitEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.SUBMIT_RESULT, e);
+  _classPrivateFieldSet(this, _onSubmitResult, function (e) {
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.SUBMIT_RESULT, e);
   });
-  this.$restartButton.addEventListener('click', function (e) {
-    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.emitEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_RESTART_BUTTON, e);
+
+  _classPrivateFieldSet(this, _onClickRestartButton, function (e) {
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_RESTART_BUTTON, e);
   });
-  this.$winStatistics.addEventListener('click', function (e) {
-    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.emitEvent)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_MODAL, e);
+
+  _classPrivateFieldSet(this, _onClickModal, function (e) {
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_MODAL, e);
   });
+
+  _classPrivateFieldSet(this, _onInputOverMaxLength, function (e) {
+    return (0,_utils_event__WEBPACK_IMPORTED_MODULE_5__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.INPUT_OVER_MAX_LENGTH, e);
+  });
+
+  _classPrivateFieldGet(this, _winNumberInputForm).addEventListener('submit', _classPrivateFieldGet(this, _onSubmitResult));
+
+  _classPrivateFieldGet(this, _restartButton).addEventListener('click', _classPrivateFieldGet(this, _onClickRestartButton));
+
+  _classPrivateFieldGet(this, _winStatistics).addEventListener('click', _classPrivateFieldGet(this, _onClickModal));
+
+  _classPrivateFieldGet(this, _winNumberInputForm).addEventListener('input', _classPrivateFieldGet(this, _onInputOverMaxLength));
 }
 
 function _generateStatisticsTableData2(currentKey, price, count) {
@@ -1168,23 +1440,25 @@ function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedec
 
 function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
 
-function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
-
-function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
-
 function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
-
-function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
 
 function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
 
 function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
 
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
+
+function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
+
+function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
 
 
 
 
 
+
+
+var _app = /*#__PURE__*/new WeakMap();
 
 var _containerView = /*#__PURE__*/new WeakMap();
 
@@ -1206,6 +1480,11 @@ var LottoViewManager = /*#__PURE__*/function () {
     _classPrivateMethodInitSpec(this, _clear);
 
     _classPrivateMethodInitSpec(this, _initializeViews);
+
+    _classPrivateFieldInitSpec(this, _app, {
+      writable: true,
+      value: null
+    });
 
     _classPrivateFieldInitSpec(this, _containerView, {
       writable: true,
@@ -1234,7 +1513,7 @@ var LottoViewManager = /*#__PURE__*/function () {
       }), _value)
     });
 
-    this.$app = (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.APP);
+    _classPrivateFieldSet(this, _app, (0,_utils_dom__WEBPACK_IMPORTED_MODULE_2__.findElement)(_constants_selector__WEBPACK_IMPORTED_MODULE_1__.SELECTOR.APP));
 
     _classPrivateMethodGet(this, _clear, _clear2).call(this);
 
@@ -1258,16 +1537,16 @@ var LottoViewManager = /*#__PURE__*/function () {
 
 function _initializeViews2() {
   _classPrivateFieldSet(this, _containerView, new _LottoContainerView__WEBPACK_IMPORTED_MODULE_3__["default"]({
-    $app: this.$app
+    $app: _classPrivateFieldGet(this, _app)
   }));
 
   _classPrivateFieldSet(this, _resultView, new _LottoResultView__WEBPACK_IMPORTED_MODULE_4__["default"]({
-    $app: this.$app
+    $app: _classPrivateFieldGet(this, _app)
   }));
 }
 
 function _clear2() {
-  this.$app.innerHTML = '';
+  _classPrivateFieldGet(this, _app).innerHTML = '';
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (LottoViewManager);
