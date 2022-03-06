@@ -222,10 +222,10 @@ var LottoGameManager = /*#__PURE__*/function () {
   return LottoGameManager;
 }();
 
-function _initializeManagers2(emitEvent) {
+function _initializeManagers2() {
   _classPrivateFieldSet(this, _lottoDomainManager, new _domains__WEBPACK_IMPORTED_MODULE_2__["default"]());
 
-  _classPrivateFieldSet(this, _lottoViewManager, new _views__WEBPACK_IMPORTED_MODULE_1__["default"](emitEvent));
+  _classPrivateFieldSet(this, _lottoViewManager, new _views__WEBPACK_IMPORTED_MODULE_1__["default"]());
 }
 
 function _setEventHandler2() {
@@ -266,23 +266,6 @@ var VIEW_ACTION = {
 
 /***/ }),
 
-/***/ "./src/js/constants/errorMessage.js":
-/*!******************************************!*\
-  !*** ./src/js/constants/errorMessage.js ***!
-  \******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ERROR_MESSAGE": () => (/* binding */ ERROR_MESSAGE)
-/* harmony export */ });
-var ERROR_MESSAGE = {
-  CHARGE_IS_INVALIDATE: '금액은 1000원 이상 100000원 미만이어야합니다. 금액을 다시 입력해주세요.',
-  WIN_NUMBER_IS_INVALIDATE: '당첨 번호는 1~45 사이의 숫자이며, 중복이 포함될 수 없습니다. 다시 입력해주세요'
-};
-
-/***/ }),
-
 /***/ "./src/js/constants/events.js":
 /*!************************************!*\
   !*** ./src/js/constants/events.js ***!
@@ -300,6 +283,27 @@ var EVENT = {
   CLICK_RESTART_BUTTON: 'onClickRestartButton ',
   CLICK_MODAL: 'onClickModal',
   INPUT_OVER_MAX_LENGTH: 'onInputOverMaxLength'
+};
+
+/***/ }),
+
+/***/ "./src/js/constants/message.js":
+/*!*************************************!*\
+  !*** ./src/js/constants/message.js ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ERROR_MESSAGE": () => (/* binding */ ERROR_MESSAGE),
+/* harmony export */   "CONFIRM_MESSAGE": () => (/* binding */ CONFIRM_MESSAGE)
+/* harmony export */ });
+var ERROR_MESSAGE = {
+  CHARGE_IS_INVALIDATE: '금액은 1000원 이상 100000원 미만이어야합니다. 금액을 다시 입력해주세요.',
+  WIN_NUMBER_IS_INVALIDATE: '당첨 번호는 1~45 사이의 숫자이며, 중복이 포함될 수 없습니다. 다시 입력해주세요'
+};
+var CONFIRM_MESSAGE = {
+  CREATE_LOTTO_LIST: '구매하신 로또는 사라집니다. 그래도 구매하시겠습니까?'
 };
 
 /***/ }),
@@ -335,6 +339,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "RANK_KEYS": () => (/* binding */ RANK_KEYS),
 /* harmony export */   "RANK_PRIZE": () => (/* binding */ RANK_PRIZE)
 /* harmony export */ });
+var _RANK_PRIZE;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var RANK_KEYS = {
   FIRST: '1등',
   SECOND: '2등',
@@ -343,14 +351,7 @@ var RANK_KEYS = {
   FIFTH: '5등',
   UNRANK: '꽝'
 };
-var RANK_PRIZE = {
-  FIRST: 2000000000,
-  SECOND: 30000000,
-  THIRD: 1500000,
-  FORTH: 50000,
-  FIFTH: 5000,
-  UNRANK: 0
-};
+var RANK_PRIZE = (_RANK_PRIZE = {}, _defineProperty(_RANK_PRIZE, RANK_KEYS.FIRST, 2000000000), _defineProperty(_RANK_PRIZE, RANK_KEYS.SECOND, 30000000), _defineProperty(_RANK_PRIZE, RANK_KEYS.THIRD, 1500000), _defineProperty(_RANK_PRIZE, RANK_KEYS.FORTH, 50000), _defineProperty(_RANK_PRIZE, RANK_KEYS.FIFTH, 5000), _defineProperty(_RANK_PRIZE, RANK_KEYS.UNRANK, 0), _RANK_PRIZE);
 
 /***/ }),
 
@@ -399,7 +400,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _constants_number__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/number */ "./src/js/constants/number.js");
 /* harmony import */ var _utils_gameUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/gameUtil */ "./src/js/utils/gameUtil.js");
-/* harmony import */ var _utils_rank__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/rank */ "./src/js/utils/rank.js");
+/* harmony import */ var _constants_rank__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/rank */ "./src/js/constants/rank.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -473,7 +474,32 @@ var Lotto = /*#__PURE__*/function () {
 
       var isMatchBonus = _classPrivateFieldGet(this, _lottoNumbers).includes(bonusNumber);
 
-      return (0,_utils_rank__WEBPACK_IMPORTED_MODULE_2__.computeRank)(numberMatchCount, isMatchBonus);
+      return this.computeRank(numberMatchCount, isMatchBonus);
+    }
+  }, {
+    key: "computeRank",
+    value: function computeRank(numberMatchCount, isMatchBonus) {
+      if (numberMatchCount === 6) {
+        return _constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_KEYS.FIRST;
+      }
+
+      if (numberMatchCount === 5 && isMatchBonus) {
+        return _constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_KEYS.SECOND;
+      }
+
+      if (numberMatchCount === 5 && !isMatchBonus) {
+        return _constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_KEYS.THIRD;
+      }
+
+      if (numberMatchCount === 4) {
+        return _constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_KEYS.FORTH;
+      }
+
+      if (numberMatchCount === 3) {
+        return _constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_KEYS.FIFTH;
+      }
+
+      return _constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_KEYS.UNRANK;
     }
   }]);
 
@@ -502,12 +528,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _constants_errorMessage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/errorMessage */ "./src/js/constants/errorMessage.js");
+/* harmony import */ var _constants_message__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/message */ "./src/js/constants/message.js");
 /* harmony import */ var _constants_number__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/number */ "./src/js/constants/number.js");
 /* harmony import */ var _constants_rank__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/rank */ "./src/js/constants/rank.js");
-/* harmony import */ var _utils_rank__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/rank */ "./src/js/utils/rank.js");
-/* harmony import */ var _utils_validator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/validator */ "./src/js/utils/validator.js");
-/* harmony import */ var _Lotto__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Lotto */ "./src/js/domains/Lotto.js");
+/* harmony import */ var _utils_validator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/validator */ "./src/js/utils/validator.js");
+/* harmony import */ var _Lotto__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Lotto */ "./src/js/domains/Lotto.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
@@ -532,13 +557,9 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
-
 function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
 
 function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
-
-function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
 
 function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
 
@@ -556,24 +577,11 @@ function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { 
 
 
 
-
 var _lottoList = /*#__PURE__*/new WeakMap();
-
-var _computeStatistics = /*#__PURE__*/new WeakSet();
-
-var _computeProfitRatio = /*#__PURE__*/new WeakSet();
-
-var _changeStatisticsMap = /*#__PURE__*/new WeakSet();
 
 var LottoList = /*#__PURE__*/function () {
   function LottoList() {
     _classCallCheck(this, LottoList);
-
-    _classPrivateMethodInitSpec(this, _changeStatisticsMap);
-
-    _classPrivateMethodInitSpec(this, _computeProfitRatio);
-
-    _classPrivateMethodInitSpec(this, _computeStatistics);
 
     _classPrivateFieldInitSpec(this, _lottoList, {
       writable: true,
@@ -589,7 +597,7 @@ var LottoList = /*#__PURE__*/function () {
   }, {
     key: "createLottoList",
     value: function createLottoList(chargeInput) {
-      if (_classPrivateFieldGet(this, _lottoList) && !confirm('구매하신 로또는 사라집니다. 그래도 구매하시겠습니까?')) {
+      if ((0,_utils_validator__WEBPACK_IMPORTED_MODULE_3__.hasLottoListAndRejectAction)(_classPrivateFieldGet(this, _lottoList))) {
         return;
       }
       /** 정상적이지 않은 로또가 하나라도 존재한다면, 멤버는 빈 값이고 사용자는 금액을 다시 입력하여야 한다. */
@@ -598,7 +606,7 @@ var LottoList = /*#__PURE__*/function () {
       var availableLottoAmount = this.exchangeChargeToLottoAmount(chargeInput);
 
       var lottoList = _toConsumableArray(new Array(availableLottoAmount)).map(function () {
-        return new _Lotto__WEBPACK_IMPORTED_MODULE_5__["default"]();
+        return new _Lotto__WEBPACK_IMPORTED_MODULE_4__["default"]();
       });
 
       _classPrivateFieldSet(this, _lottoList, lottoList);
@@ -606,61 +614,71 @@ var LottoList = /*#__PURE__*/function () {
   }, {
     key: "exchangeChargeToLottoAmount",
     value: function exchangeChargeToLottoAmount(charge) {
-      if ((0,_utils_validator__WEBPACK_IMPORTED_MODULE_4__.isValidCharge)(charge)) {
+      if ((0,_utils_validator__WEBPACK_IMPORTED_MODULE_3__.isValidCharge)(charge)) {
         return Math.floor(charge / _constants_number__WEBPACK_IMPORTED_MODULE_1__.NUMBER.LOTTO_PRICE);
       }
 
-      throw new Error(_constants_errorMessage__WEBPACK_IMPORTED_MODULE_0__.ERROR_MESSAGE.CHARGE_IS_INVALIDATE);
+      throw new Error(_constants_message__WEBPACK_IMPORTED_MODULE_0__.ERROR_MESSAGE.CHARGE_IS_INVALIDATE);
     }
   }, {
     key: "computeStatisticsAndProfitRatio",
     value: function computeStatisticsAndProfitRatio(winningNumbers, bonusNumber) {
-      if ((0,_utils_validator__WEBPACK_IMPORTED_MODULE_4__.isValidWinningNumber)([].concat(_toConsumableArray(winningNumbers), [bonusNumber]))) {
-        var statistics = _classPrivateMethodGet(this, _computeStatistics, _computeStatistics2).call(this, winningNumbers, bonusNumber);
-
-        var profitRatio = _classPrivateMethodGet(this, _computeProfitRatio, _computeProfitRatio2).call(this, statistics);
-
+      if ((0,_utils_validator__WEBPACK_IMPORTED_MODULE_3__.isValidWinningNumber)([].concat(_toConsumableArray(winningNumbers), [bonusNumber]))) {
+        var statistics = this.computeStatistics(winningNumbers, bonusNumber);
+        var profitRatio = this.computeProfitRatio(statistics);
         return {
           statistics: statistics,
           profitRatio: profitRatio
         };
       }
 
-      throw new Error(_constants_errorMessage__WEBPACK_IMPORTED_MODULE_0__.ERROR_MESSAGE.WIN_NUMBER_IS_INVALIDATE);
+      throw new Error(_constants_message__WEBPACK_IMPORTED_MODULE_0__.ERROR_MESSAGE.WIN_NUMBER_IS_INVALIDATE);
+    }
+    /** 객체의 상태를 바꾸지 않는다. 은닉화 할 필요가 있나? */
+
+    /** 도메인은 최대한 변경하고 싶지 않다. 초반 설계에 고민을 좀 더 했어야 한다. */
+
+  }, {
+    key: "computeStatistics",
+    value: function computeStatistics(winningNumbers, bonusNumber) {
+      var statisticsArray = _classPrivateFieldGet(this, _lottoList).map(function (lotto) {
+        return lotto.computeWinResult(winningNumbers, bonusNumber);
+      });
+
+      var statisticsMap = this.changeStatisticsMap(statisticsArray);
+      return statisticsMap;
+    }
+  }, {
+    key: "computeProfitRatio",
+    value: function computeProfitRatio(statistics) {
+      var lottoPurchaseAmount = _classPrivateFieldGet(this, _lottoList).length * _constants_number__WEBPACK_IMPORTED_MODULE_1__.NUMBER.LOTTO_PRICE;
+      var profitAmount = Object.keys(statistics).reduce(function (prev, currentKey) {
+        var _statistics$currentKe, _RANK_PRIZE$currentKe;
+
+        var count = (_statistics$currentKe = statistics[currentKey]) !== null && _statistics$currentKe !== void 0 ? _statistics$currentKe : 0;
+        var price = (_RANK_PRIZE$currentKe = _constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_PRIZE[currentKey]) !== null && _RANK_PRIZE$currentKe !== void 0 ? _RANK_PRIZE$currentKe : 0;
+        return prev + count * price;
+      }, 0);
+      return profitAmount / lottoPurchaseAmount * 100;
+    }
+    /** 배열 형태 ex) ['1등','1등','2등','3등','꽝','꽝'] 를*/
+
+    /** 객체 형태 ex) {'1등' : 2, '2등' : 1} 로 바꾼다*/
+
+  }, {
+    key: "changeStatisticsMap",
+    value: function changeStatisticsMap(statisticsArray) {
+      var statisticsMap = Object.values(_constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_KEYS).reduce(function (prev, key) {
+        return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, "".concat(key), 0));
+      }, {});
+      return statisticsArray.reduce(function (prev, result) {
+        return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, "".concat(result), prev[result] + 1));
+      }, statisticsMap);
     }
   }]);
 
   return LottoList;
 }();
-
-function _computeStatistics2(winningNumbers, bonusNumber) {
-  var statisticsArray = _classPrivateFieldGet(this, _lottoList).map(function (lotto) {
-    return lotto.computeWinResult(winningNumbers, bonusNumber);
-  });
-
-  var statisticsMap = _classPrivateMethodGet(this, _changeStatisticsMap, _changeStatisticsMap2).call(this, statisticsArray);
-
-  return statisticsMap;
-}
-
-function _computeProfitRatio2(statistics) {
-  var lottoPurchaseAmount = _classPrivateFieldGet(this, _lottoList).length * _constants_number__WEBPACK_IMPORTED_MODULE_1__.NUMBER.LOTTO_PRICE;
-  var profitAmount = Object.keys(statistics).reduce(function (prev, currentKey) {
-    var count = statistics[currentKey];
-    var price = (0,_utils_rank__WEBPACK_IMPORTED_MODULE_3__.computeRankPrize)(currentKey);
-    return prev + count * price;
-  }, 0);
-  return profitAmount / lottoPurchaseAmount * 100;
-}
-
-function _changeStatisticsMap2(statisticsArray) {
-  var statisticsMap = Object.values(_constants_rank__WEBPACK_IMPORTED_MODULE_2__.RANK_KEYS).reduce(function (prev, key) {
-    return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, "".concat(key), 0));
-  }, {});
-  return statisticsArray.reduce(function (prev, result) {
-    return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, "".concat(result), prev[result] + 1));
-  }, statisticsMap);
-}
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (LottoList);
 
@@ -729,11 +747,11 @@ var LottoDomainManager = /*#__PURE__*/function () {
 
     _classPrivateFieldInitSpec(this, _reducer, {
       writable: true,
-      value: (_value = {}, _defineProperty(_value, "".concat(_constants_actions__WEBPACK_IMPORTED_MODULE_0__.DOMAIN_ACTION.NEW_CHARGE_INPUT), function _(chargeInput) {
+      value: (_value = {}, _defineProperty(_value, _constants_actions__WEBPACK_IMPORTED_MODULE_0__.DOMAIN_ACTION.NEW_CHARGE_INPUT, function (chargeInput) {
         _classPrivateFieldGet(_this, _lottoListDomain).createLottoList(chargeInput);
 
         return _classPrivateFieldGet(_this, _lottoListDomain).getLottoList();
-      }), _defineProperty(_value, "".concat(_constants_actions__WEBPACK_IMPORTED_MODULE_0__.DOMAIN_ACTION.COMPUTE_RESULT_STATISTICS), function _(_ref) {
+      }), _defineProperty(_value, _constants_actions__WEBPACK_IMPORTED_MODULE_0__.DOMAIN_ACTION.COMPUTE_RESULT_STATISTICS, function (_ref) {
         var winningNumbers = _ref.winningNumbers,
             bonusNumber = _ref.bonusNumber;
 
@@ -804,7 +822,8 @@ var isCancelModal = function isCancelModal(className) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "setListener": () => (/* binding */ setListener),
-/* harmony export */   "emitListener": () => (/* binding */ emitListener)
+/* harmony export */   "emitListener": () => (/* binding */ emitListener),
+/* harmony export */   "removeListener": () => (/* binding */ removeListener)
 /* harmony export */ });
 /** 비즈니스 로직을 담은 클래스가 여러 개여도 모든 핸들러는 이 객체로 들어오게됩니다. */
 
@@ -827,7 +846,8 @@ var _ref = function () {
   };
 }(),
     setListener = _ref.setListener,
-    emitListener = _ref.emitListener;
+    emitListener = _ref.emitListener,
+    removeListener = _ref.removeListener;
 
 
 
@@ -866,68 +886,6 @@ function shuffle(array) {
 
 /***/ }),
 
-/***/ "./src/js/utils/rank.js":
-/*!******************************!*\
-  !*** ./src/js/utils/rank.js ***!
-  \******************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "computeRankPrize": () => (/* binding */ computeRankPrize),
-/* harmony export */   "computeRank": () => (/* binding */ computeRank)
-/* harmony export */ });
-/* harmony import */ var _constants_rank__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/rank */ "./src/js/constants/rank.js");
-
-function computeRankPrize(rank) {
-  if (rank === _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.FIRST) {
-    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_PRIZE.FIRST;
-  }
-
-  if (rank === _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.SECOND) {
-    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_PRIZE.SECOND;
-  }
-
-  if (rank === _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.THIRD) {
-    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_PRIZE.THIRD;
-  }
-
-  if (rank === _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.FORTH) {
-    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_PRIZE.FORTH;
-  }
-
-  if (rank === _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.FIFTH) {
-    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_PRIZE.FIFTH;
-  }
-
-  return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_PRIZE.UNRANK;
-}
-function computeRank(numberMatchCount, isMatchBonus) {
-  if (numberMatchCount === 6) {
-    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.FIRST;
-  }
-
-  if (numberMatchCount === 5 && isMatchBonus) {
-    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.SECOND;
-  }
-
-  if (numberMatchCount === 5 && !isMatchBonus) {
-    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.THIRD;
-  }
-
-  if (numberMatchCount === 4) {
-    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.FORTH;
-  }
-
-  if (numberMatchCount === 3) {
-    return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.FIFTH;
-  }
-
-  return _constants_rank__WEBPACK_IMPORTED_MODULE_0__.RANK_KEYS.UNRANK;
-}
-
-/***/ }),
-
 /***/ "./src/js/utils/util.js":
 /*!******************************!*\
   !*** ./src/js/utils/util.js ***!
@@ -957,9 +915,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "isValidCharge": () => (/* binding */ isValidCharge),
 /* harmony export */   "hasNotDuplicatedNumber": () => (/* binding */ hasNotDuplicatedNumber),
 /* harmony export */   "isValidEveryLottoNumber": () => (/* binding */ isValidEveryLottoNumber),
-/* harmony export */   "isValidWinningNumber": () => (/* binding */ isValidWinningNumber)
+/* harmony export */   "isValidWinningNumber": () => (/* binding */ isValidWinningNumber),
+/* harmony export */   "hasLottoListAndRejectAction": () => (/* binding */ hasLottoListAndRejectAction)
 /* harmony export */ });
-/* harmony import */ var _constants_number__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/number */ "./src/js/constants/number.js");
+/* harmony import */ var _constants_message__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/message */ "./src/js/constants/message.js");
+/* harmony import */ var _constants_number__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/number */ "./src/js/constants/number.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -973,25 +933,29 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 
+
 function isValidLength(lottoNumber) {
-  return lottoNumber.length === _constants_number__WEBPACK_IMPORTED_MODULE_0__.NUMBER.LOTTO_NUMBER_LENGTH;
+  return lottoNumber.length === _constants_number__WEBPACK_IMPORTED_MODULE_1__.NUMBER.LOTTO_NUMBER_LENGTH;
 }
 function isValidLottoNumbers(lottoNumbers) {
   return isValidEveryLottoNumber(lottoNumbers) && hasNotDuplicatedNumber(lottoNumbers);
 }
 function isValidCharge(charge) {
-  return Number.isInteger(charge) && charge >= _constants_number__WEBPACK_IMPORTED_MODULE_0__.NUMBER.LOTTO_PRICE && charge < _constants_number__WEBPACK_IMPORTED_MODULE_0__.NUMBER.LOTTO_MAX_PRICE;
+  return Number.isInteger(charge) && charge >= _constants_number__WEBPACK_IMPORTED_MODULE_1__.NUMBER.LOTTO_PRICE && charge < _constants_number__WEBPACK_IMPORTED_MODULE_1__.NUMBER.LOTTO_MAX_PRICE;
 }
 function hasNotDuplicatedNumber(array) {
   return array.length === _toConsumableArray(new Set(array)).length;
 }
 function isValidEveryLottoNumber(array) {
   return array.every(function (number) {
-    return Number.isInteger(number) && number >= _constants_number__WEBPACK_IMPORTED_MODULE_0__.NUMBER.LOTTO_MIN_NUMBER && number <= _constants_number__WEBPACK_IMPORTED_MODULE_0__.NUMBER.LOTTO_MAX_NUMBER;
+    return Number.isInteger(number) && number >= _constants_number__WEBPACK_IMPORTED_MODULE_1__.NUMBER.LOTTO_MIN_NUMBER && number <= _constants_number__WEBPACK_IMPORTED_MODULE_1__.NUMBER.LOTTO_MAX_NUMBER;
   });
 }
 function isValidWinningNumber(winningAndBonusNumbers) {
   return isValidEveryLottoNumber(winningAndBonusNumbers) && winningAndBonusNumbers.length === _toConsumableArray(new Set(winningAndBonusNumbers)).length;
+}
+function hasLottoListAndRejectAction(lottoList) {
+  return lottoList && !confirm(_constants_message__WEBPACK_IMPORTED_MODULE_0__.CONFIRM_MESSAGE.CREATE_LOTTO_LIST);
 }
 
 /***/ }),
@@ -1051,12 +1015,6 @@ var _purchasedMessage = /*#__PURE__*/new WeakMap();
 
 var _alignConverterContainer = /*#__PURE__*/new WeakMap();
 
-var _onSubmitCharge = /*#__PURE__*/new WeakMap();
-
-var _onChangeAlignState = /*#__PURE__*/new WeakMap();
-
-var _onInputOverMaxLength = /*#__PURE__*/new WeakMap();
-
 var _initializeTemplate = /*#__PURE__*/new WeakSet();
 
 var _initializeDOM = /*#__PURE__*/new WeakSet();
@@ -1111,24 +1069,9 @@ var LottoContainerView = /*#__PURE__*/function () {
       value: null
     });
 
-    _classPrivateFieldInitSpec(this, _onSubmitCharge, {
-      writable: true,
-      value: null
-    });
-
-    _classPrivateFieldInitSpec(this, _onChangeAlignState, {
-      writable: true,
-      value: null
-    });
-
-    _classPrivateFieldInitSpec(this, _onInputOverMaxLength, {
-      writable: true,
-      value: null
-    });
-
     _classPrivateFieldInitSpec(this, _basicTemplate, {
       writable: true,
-      value: "\n  <h1 class=\"header-title\">\uD83C\uDFB1 \uD589\uC6B4\uC758 \uB85C\uB610</h1>\n  <section id=\"charge-input-section\" aria-labelledby=\"charge-input-section-title\">\n    <h1 id=\"charge-input-section-title\" hidden>\uAE08\uC561\uC744 \uC785\uB825\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <p>\uAD6C\uC785\uD560 \uAE08\uC561\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694. <b>(\uC785\uB825 \uAC00\uB2A5 \uCD5C\uB300 \uAE08\uC561\uC740 99999\uC6D0\uC785\uB2C8\uB2E4.)</b></p>\n    <form id=\"charge-input-form\">\n      <input id=\"charge-input\" type=\"number\" placeholder=\"\uAE08\uC561\" min=\"1000\" max=\"100000\" maxlength=\"5\"/>\n      <button id=\"charge-button\">\uAD6C\uC785</button>\n    </form>\n  </section>\n\n  <section id=\"lotto-section\" aria-labelledby=\"lotto-section-title\">\n    <h1 id=\"lotto-section-title\" hidden>\uAD6C\uB9E4\uD55C \uB85C\uB610\uB97C \uD655\uC778\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <div class=\"lotto-wrapper\">\n      <span id=\"purchased-message\"></span>\n      <div id=\"lotto-container\" data-visible-state=\"false\">\uB85C\uB610\uB97C \uAD6C\uB9E4\uD574\uC8FC\uC138\uC694 \uD83D\uDE33</div>\n    </div>\n    <div id=\"align-converter-container\" class=\"flex-column-align-end\" data-visible-state=\"false\">\n      <label for=\"align-converter\" class=\"flex-column-align-end\">\n        <span>\uBC88\uD638 \uBCF4\uAE30</span>\n        <input id=\"align-converter\" type=\"checkbox\" class=\"converter\" />\n        <span class=\"checkmark\">\n          <span class=\"circle\"></span>\n        </span>\n      </label>\n    </div>\n  </section>"
+      value: "\n  <h1 class=\"header-title\">\uD83C\uDFB1 \uD589\uC6B4\uC758 \uB85C\uB610</h1>\n  <section id=\"charge-input-section\" aria-labelledby=\"charge-input-section-title\">\n    <h1 id=\"charge-input-section-title\" hidden>\uAE08\uC561\uC744 \uC785\uB825\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <p>\uAD6C\uC785\uD560 \uAE08\uC561\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694. <b>(\uC785\uB825 \uAC00\uB2A5 \uCD5C\uB300 \uAE08\uC561\uC740 99,999\uC6D0\uC785\uB2C8\uB2E4.)</b></p>\n    <form id=\"charge-input-form\">\n      <input id=\"charge-input\" type=\"number\" placeholder=\"\uAE08\uC561\" min=\"1000\" max=\"100000\" maxlength=\"5\"/>\n      <button id=\"charge-button\">\uAD6C\uC785</button>\n    </form>\n  </section>\n\n  <section id=\"lotto-section\" aria-labelledby=\"lotto-section-title\">\n    <h1 id=\"lotto-section-title\" hidden>\uAD6C\uB9E4\uD55C \uB85C\uB610\uB97C \uD655\uC778\uD558\uB294 \uC139\uC158\uC785\uB2C8\uB2E4.</h1>\n    <div class=\"lotto-wrapper\">\n      <span id=\"purchased-message\"></span>\n      <div id=\"lotto-container\" data-visible-state=\"false\">\uB85C\uB610\uB97C \uAD6C\uB9E4\uD574\uC8FC\uC138\uC694 \uD83D\uDE33</div>\n    </div>\n    <div id=\"align-converter-container\" class=\"flex-column-align-end\" data-visible-state=\"false\">\n      <label for=\"align-converter\" class=\"flex-column-align-end\">\n        <span>\uBC88\uD638 \uBCF4\uAE30</span>\n        <input id=\"align-converter\" type=\"checkbox\" class=\"converter\" />\n        <span class=\"checkmark\">\n          <span class=\"circle\"></span>\n        </span>\n      </label>\n    </div>\n  </section>"
     });
 
     _classPrivateFieldSet(this, _app, $app);
@@ -1189,23 +1132,17 @@ function _initializeDOM2() {
 }
 
 function _bindEventHandler2() {
-  _classPrivateFieldSet(this, _onSubmitCharge, function (e) {
+  _classPrivateFieldGet(this, _chargeForm).addEventListener('submit', function (e) {
     return (0,_utils_event__WEBPACK_IMPORTED_MODULE_3__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.SUBMIT_CHARGE, e);
   });
 
-  _classPrivateFieldSet(this, _onChangeAlignState, function (e) {
+  _classPrivateFieldGet(this, _alignConverter).addEventListener('change', function (e) {
     return (0,_utils_event__WEBPACK_IMPORTED_MODULE_3__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CHANGE_ALIGN_STATE, e);
   });
 
-  _classPrivateFieldSet(this, _onInputOverMaxLength, function (e) {
+  _classPrivateFieldGet(this, _chargeForm).addEventListener('input', function (e) {
     return (0,_utils_event__WEBPACK_IMPORTED_MODULE_3__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.INPUT_OVER_MAX_LENGTH, e);
   });
-
-  _classPrivateFieldGet(this, _chargeForm).addEventListener('submit', _classPrivateFieldGet(this, _onSubmitCharge));
-
-  _classPrivateFieldGet(this, _alignConverter).addEventListener('change', _classPrivateFieldGet(this, _onChangeAlignState));
-
-  _classPrivateFieldGet(this, _chargeForm).addEventListener('input', _classPrivateFieldGet(this, _onInputOverMaxLength));
 }
 
 function _generateLottoTemplate2(lottoNumbers) {
@@ -1231,7 +1168,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/dom */ "./src/js/utils/dom.js");
 /* harmony import */ var _utils_util__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/util */ "./src/js/utils/util.js");
 /* harmony import */ var _utils_event__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/event */ "./src/js/utils/event.js");
-/* harmony import */ var _utils_rank__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/rank */ "./src/js/utils/rank.js");
+/* harmony import */ var _constants_rank__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../constants/rank */ "./src/js/constants/rank.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -1276,14 +1213,6 @@ var _statisticsTableBody = /*#__PURE__*/new WeakMap();
 var _profitRatioText = /*#__PURE__*/new WeakMap();
 
 var _restartButton = /*#__PURE__*/new WeakMap();
-
-var _onSubmitResult = /*#__PURE__*/new WeakMap();
-
-var _onClickRestartButton = /*#__PURE__*/new WeakMap();
-
-var _onClickModal = /*#__PURE__*/new WeakMap();
-
-var _onInputOverMaxLength = /*#__PURE__*/new WeakMap();
 
 var _initializeTemplate = /*#__PURE__*/new WeakSet();
 
@@ -1348,29 +1277,9 @@ var LottoResultView = /*#__PURE__*/function () {
       value: null
     });
 
-    _classPrivateFieldInitSpec(this, _onSubmitResult, {
-      writable: true,
-      value: null
-    });
-
-    _classPrivateFieldInitSpec(this, _onClickRestartButton, {
-      writable: true,
-      value: null
-    });
-
-    _classPrivateFieldInitSpec(this, _onClickModal, {
-      writable: true,
-      value: null
-    });
-
-    _classPrivateFieldInitSpec(this, _onInputOverMaxLength, {
-      writable: true,
-      value: null
-    });
-
     _classPrivateFieldInitSpec(this, _basicTemplate, {
       writable: true,
-      value: "<section id=\"win-number-input-section\" aria-labelledby=\"win-number-input-title\" class=\"hide\">\n  <h1 id=\"win-number-input-title\" hidden>\uB2F9\uCCA8 \uBC88\uD638 \uC785\uB825 \uC139\uC158</h1>\n  <p>\uC9C0\uB09C \uC8FC \uB2F9\uCCA8\uBC88\uD638 6\uAC1C\uC640 \uBCF4\uB108\uC2A4 \uBC88\uD638 1\uAC1C\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.</p>\n  <p><b>(\uC911\uBCF5\uC774 \uC5C6\uB294 1~45\uC758 \uC22B\uC790\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.)</b></p>\n  <form id=\"win-number-input-form\">\n    <div class=\"win-number-input-wrapper\">\n      <div>\n        <p>\uB2F9\uCCA8 \uBC88\uD638</p>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <label for=\"bonus-number-input\" />\n        </div>\n        <div class=\"bonus-number-wrapper flex-column-align-end\">\n        <p>\uBCF4\uB108\uC2A4 \uBC88\uD638</p>\n        <input id=\"bonus-number-input\" class=\"bonus-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n      </div>\n    </div>\n\n    <button id=\"result-button\">\uACB0\uACFC \uD655\uC778\uD558\uAE30</button>\n  </form>\n</section>\n<section id=\"win-statistics\" aria-labelledby=\"win-statistics-title\" class=\"hide\">\n  <h1 id=\"win-statistics-title\" hidden>\uB2F9\uCCA8 \uD1B5\uACC4 \uCD9C\uB825</h1>\n  <div class='modal-wrapper'>\n  <div id=\"result-container\"class=\"modal-container\">\n  <span class=\"modal-cancel-button\">\u274C</span>\n     <div id=\"result-contents\">\n     <table  class=\".result-container-section\">\n     <caption hidden>\uACB0\uACFC \uD14C\uC774\uBE14\uC785\uB2C8\uB2E4.</caption>\n     <thead>\n      <tr>\n        <th>\uB4F1\uC218</th>\n        <th>\uB2F9\uCCA8\uAE08</th>\n        <th>\uB2F9\uCCA8\uAC2F\uC218</th>\n      </tr>\n     </thead>\n     <tbody id=\"statistics-table-body\">\n     </tbody>\n     </table>\n     <div id=\"profit-ratio-text\"  class=\".result-container-section\"></div>\n     <button id=\"restart-button\"  class=\".result-container-section\">\uB2E4\uC2DC \uC2DC\uC791\uD558\uAE30</button>\n     </div>\n    </div>\n  </div>\n</section>"
+      value: "<section id=\"win-number-input-section\" aria-labelledby=\"win-number-input-title\" class=\"hide\">\n  <h1 id=\"win-number-input-title\" hidden>\uB2F9\uCCA8 \uBC88\uD638 \uC785\uB825 \uC139\uC158</h1>\n  <p>\uC9C0\uB09C \uC8FC \uB2F9\uCCA8\uBC88\uD638 6\uAC1C\uC640 \uBCF4\uB108\uC2A4 \uBC88\uD638 1\uAC1C\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.</p>\n  <p><b>(\uC911\uBCF5\uC774 \uC5C6\uB294 1~45\uC758 \uC22B\uC790\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.)</b></p>\n  <form id=\"win-number-input-form\">\n    <div class=\"win-number-input-wrapper\">\n      <div>\n        <p>\uB2F9\uCCA8 \uBC88\uD638</p>\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <input class=\"winning-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\" />\n        <label for=\"bonus-number-input\" />\n        </div>\n        <div class=\"bonus-number-wrapper flex-column-align-end\">\n        <p>\uBCF4\uB108\uC2A4 \uBC88\uD638</p>\n        <input id=\"bonus-number-input\" class=\"bonus-number-input\" type=\"number\" min=\"1\" max=\"45\" required maxlength=\"2\"/>\n      </div>\n    </div>\n\n    <button id=\"result-button\">\uACB0\uACFC \uD655\uC778\uD558\uAE30</button>\n  </form>\n</section>\n<section id=\"win-statistics\" aria-labelledby=\"win-statistics-title\" class=\"hide\">\n  <h1 id=\"win-statistics-title\" hidden>\uB2F9\uCCA8 \uD1B5\uACC4 \uCD9C\uB825</h1>\n  <div class='modal-wrapper'>\n  <div id=\"result-container\"class=\"modal-container\">\n  <span class=\"modal-cancel-button\">\u274C</span>\n     <div id=\"result-contents\">\n     <table  class=\"result-container-section\">\n     <caption hidden>\uACB0\uACFC \uD14C\uC774\uBE14\uC785\uB2C8\uB2E4.</caption>\n     <thead>\n      <tr>\n        <th>\uB4F1\uC218</th>\n        <th>\uB2F9\uCCA8\uAE08</th>\n        <th>\uB2F9\uCCA8\uAC2F\uC218</th>\n      </tr>\n     </thead>\n     <tbody id=\"statistics-table-body\">\n     </tbody>\n     </table>\n     <div id=\"profit-ratio-text\"  class=\".result-container-section\"></div>\n     <button id=\"restart-button\"  class=\".result-container-section\">\uB2E4\uC2DC \uC2DC\uC791\uD558\uAE30</button>\n     </div>\n    </div>\n  </div>\n</section>"
     });
 
     _classPrivateFieldSet(this, _app, $app);
@@ -1395,8 +1304,10 @@ var LottoResultView = /*#__PURE__*/function () {
       var statistics = _ref2.statistics,
           profitRatio = _ref2.profitRatio;
       _classPrivateFieldGet(this, _statisticsTableBody).innerHTML = Object.keys(statistics).reduce(function (prev, currentKey) {
-        var price = (0,_utils_rank__WEBPACK_IMPORTED_MODULE_5__.computeRankPrize)(currentKey);
-        var count = statistics[currentKey];
+        var _statistics$currentKe, _RANK_PRIZE$currentKe;
+
+        var count = (_statistics$currentKe = statistics[currentKey]) !== null && _statistics$currentKe !== void 0 ? _statistics$currentKe : '';
+        var price = (_RANK_PRIZE$currentKe = _constants_rank__WEBPACK_IMPORTED_MODULE_5__.RANK_PRIZE[currentKey]) !== null && _RANK_PRIZE$currentKe !== void 0 ? _RANK_PRIZE$currentKe : '';
         return prev + _classPrivateMethodGet(_this, _generateStatisticsTableData, _generateStatisticsTableData2).call(_this, currentKey, price, count);
       }, '');
       _classPrivateFieldGet(this, _profitRatioText).innerHTML = _classPrivateMethodGet(this, _generateProfitRatioText, _generateProfitRatioText2).call(this, profitRatio);
@@ -1435,33 +1346,25 @@ function _initializeDOM2() {
 }
 
 function _bindEventHandler2() {
-  _classPrivateFieldSet(this, _onSubmitResult, function (e) {
+  _classPrivateFieldGet(this, _winNumberInputForm).addEventListener('submit', function (e) {
     return (0,_utils_event__WEBPACK_IMPORTED_MODULE_4__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.SUBMIT_RESULT, e);
   });
 
-  _classPrivateFieldSet(this, _onClickRestartButton, function (e) {
+  _classPrivateFieldGet(this, _restartButton).addEventListener('click', function (e) {
     return (0,_utils_event__WEBPACK_IMPORTED_MODULE_4__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_RESTART_BUTTON, e);
   });
 
-  _classPrivateFieldSet(this, _onClickModal, function (e) {
+  _classPrivateFieldGet(this, _winStatistics).addEventListener('click', function (e) {
     return (0,_utils_event__WEBPACK_IMPORTED_MODULE_4__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.CLICK_MODAL, e);
   });
 
-  _classPrivateFieldSet(this, _onInputOverMaxLength, function (e) {
+  _classPrivateFieldGet(this, _winNumberInputForm).addEventListener('input', function (e) {
     return (0,_utils_event__WEBPACK_IMPORTED_MODULE_4__.emitListener)(_constants_events__WEBPACK_IMPORTED_MODULE_0__.EVENT.INPUT_OVER_MAX_LENGTH, e);
   });
-
-  _classPrivateFieldGet(this, _winNumberInputForm).addEventListener('submit', _classPrivateFieldGet(this, _onSubmitResult));
-
-  _classPrivateFieldGet(this, _restartButton).addEventListener('click', _classPrivateFieldGet(this, _onClickRestartButton));
-
-  _classPrivateFieldGet(this, _winStatistics).addEventListener('click', _classPrivateFieldGet(this, _onClickModal));
-
-  _classPrivateFieldGet(this, _winNumberInputForm).addEventListener('input', _classPrivateFieldGet(this, _onInputOverMaxLength));
 }
 
 function _generateStatisticsTableData2(currentKey, price, count) {
-  return "<tr><td>".concat(currentKey, "</td><td>").concat((0,_utils_util__WEBPACK_IMPORTED_MODULE_3__.changeCurrencyFormat)(price), "</td><td>").concat(count, "</td> </tr>");
+  return "<tr><td>".concat(currentKey, "</td><td>").concat((0,_utils_util__WEBPACK_IMPORTED_MODULE_3__.changeCurrencyFormat)(price), "\uC6D0</td><td>").concat(count, "</td> </tr>");
 }
 
 function _generateProfitRatioText2(profitRatio) {
@@ -1559,17 +1462,17 @@ var LottoViewManager = /*#__PURE__*/function () {
 
     _classPrivateFieldInitSpec(this, _reducer, {
       writable: true,
-      value: (_value = {}, _defineProperty(_value, "".concat(_constants_actions__WEBPACK_IMPORTED_MODULE_0__.VIEW_ACTION.UPDATE_LOTTO_LIST), function _(payload) {
+      value: (_value = {}, _defineProperty(_value, _constants_actions__WEBPACK_IMPORTED_MODULE_0__.VIEW_ACTION.UPDATE_LOTTO_LIST, function (payload) {
         _classPrivateFieldGet(_this, _containerView).renderLottoSection(payload);
 
         _classPrivateFieldGet(_this, _resultView).showWinNumberInputSection();
-      }), _defineProperty(_value, "".concat(_constants_actions__WEBPACK_IMPORTED_MODULE_0__.VIEW_ACTION.UPDATE_VISIBLE_STATE), function _(payload) {
+      }), _defineProperty(_value, _constants_actions__WEBPACK_IMPORTED_MODULE_0__.VIEW_ACTION.UPDATE_VISIBLE_STATE, function (payload) {
         _classPrivateFieldGet(_this, _containerView).renderAlignState(payload);
-      }), _defineProperty(_value, "".concat(_constants_actions__WEBPACK_IMPORTED_MODULE_0__.VIEW_ACTION.RENDER_STATISTICS), function _(payload) {
+      }), _defineProperty(_value, _constants_actions__WEBPACK_IMPORTED_MODULE_0__.VIEW_ACTION.RENDER_STATISTICS, function (payload) {
         _classPrivateFieldGet(_this, _resultView).showStatisticsModal();
 
         _classPrivateFieldGet(_this, _resultView).renderStatisticsModalContents(payload);
-      }), _defineProperty(_value, "".concat(_constants_actions__WEBPACK_IMPORTED_MODULE_0__.VIEW_ACTION.MODAL_CANCEL), function _() {
+      }), _defineProperty(_value, _constants_actions__WEBPACK_IMPORTED_MODULE_0__.VIEW_ACTION.MODAL_CANCEL, function () {
         _classPrivateFieldGet(_this, _resultView).hideStatisticsModal();
       }), _value)
     });
@@ -1692,7 +1595,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".modal-wrapper {\n  position: fixed;\n  width: 100vw;\n  height: 100vh;\n\n  background-color: rgba(0, 0, 0, 0.5);\n\n  top: 0;\n  left: 0;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n.modal-container {\n  background-color: white;\n  min-width: 320px;\n  padding: 40px;\n  position: relative;\n}\n\n.modal-cancel-button {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}\n", "",{"version":3,"sources":["webpack://./src/css/modal.css"],"names":[],"mappings":"AAAA;EACE,eAAe;EACf,YAAY;EACZ,aAAa;;EAEb,oCAAoC;;EAEpC,MAAM;EACN,OAAO;;EAEP,aAAa;EACb,uBAAuB;EACvB,mBAAmB;AACrB;;AAEA;EACE,uBAAuB;EACvB,gBAAgB;EAChB,aAAa;EACb,kBAAkB;AACpB;;AAEA;EACE,kBAAkB;EAClB,SAAS;EACT,WAAW;AACb","sourcesContent":[".modal-wrapper {\n  position: fixed;\n  width: 100vw;\n  height: 100vh;\n\n  background-color: rgba(0, 0, 0, 0.5);\n\n  top: 0;\n  left: 0;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n.modal-container {\n  background-color: white;\n  min-width: 320px;\n  padding: 40px;\n  position: relative;\n}\n\n.modal-cancel-button {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, ".modal-wrapper {\n  position: fixed;\n  width: 100vw;\n  height: 100vh;\n\n  background-color: rgba(0, 0, 0, 0.5);\n\n  top: 0;\n  left: 0;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n.modal-container {\n  background-color: white;\n  min-width: 400px;\n  padding: 40px;\n  position: relative;\n}\n\n.modal-cancel-button {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}\n", "",{"version":3,"sources":["webpack://./src/css/modal.css"],"names":[],"mappings":"AAAA;EACE,eAAe;EACf,YAAY;EACZ,aAAa;;EAEb,oCAAoC;;EAEpC,MAAM;EACN,OAAO;;EAEP,aAAa;EACb,uBAAuB;EACvB,mBAAmB;AACrB;;AAEA;EACE,uBAAuB;EACvB,gBAAgB;EAChB,aAAa;EACb,kBAAkB;AACpB;;AAEA;EACE,kBAAkB;EAClB,SAAS;EACT,WAAW;AACb","sourcesContent":[".modal-wrapper {\n  position: fixed;\n  width: 100vw;\n  height: 100vh;\n\n  background-color: rgba(0, 0, 0, 0.5);\n\n  top: 0;\n  left: 0;\n\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n.modal-container {\n  background-color: white;\n  min-width: 400px;\n  padding: 40px;\n  position: relative;\n}\n\n.modal-cancel-button {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
